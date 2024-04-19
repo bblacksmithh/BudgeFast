@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BudgeFast.Services.TransactionServices.Dtos
 {
-    public class CreateTransactionDto: FullAuditedEntityDto<Guid>
+    public class CreateTransactionDto: EntityDto<Guid>
     {
         public long UserId { get; set; }
         public Guid BankAccountId { get; set; }

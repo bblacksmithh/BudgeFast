@@ -27,7 +27,7 @@ const RegisterContent: React.FC = () => {
                             <Form.Item>
                                 <Input style={{ width: '250px', margin: 'auto', display: 'block' }} type="password" placeholder="Password" />
                             </Form.Item>
-                            <Button className={styles.authButton} type="primary">Register</Button>
+                            <button className={styles.button2}>Register</button>
                         </Form>
                         <p>Already have an account? <a style={{ textDecoration: 'none' }} href="/login">Login</a></p>
                     </div>

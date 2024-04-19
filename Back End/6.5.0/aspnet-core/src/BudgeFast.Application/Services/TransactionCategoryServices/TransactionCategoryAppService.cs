@@ -20,7 +20,7 @@ namespace BudgeFast.Services.TransactionCategoryServices
             _transactionCategoryRepository = transactionCategoryRepository;
         }
 
-        public async Task<TransactionCategory> CreateCategory(CreateTransactionCategoryDto input)
+        public async Task<TransactionCategory> CreateCategory(TransactionCategoryDto input)
         {
             var category = new TransactionCategory
             {
@@ -31,6 +31,24 @@ namespace BudgeFast.Services.TransactionCategoryServices
 
             await _transactionCategoryRepository.InsertAsync(category);
             return category;
+        }
+
+        public async Task<List<TransactionCategory>> GetAllCategories()
+        {
+            var categories = _transactionCategoryRepository.GetAll().ToList();
+            return categories;
+        }
+
+        public async Task<List<TransactionCategory>> GetAllExpenseCategories()
+        {
+            var categories = _transactionCategoryRepository.GetAll().Where(x => x.IsExpense == true).ToList();
+            return categories;
+        }
+
+        public async Task<List<TransactionCategory>> GetAllIncomeCategories()
+        {
+            var categories = _transactionCategoryRepository.GetAll().Where(x => x.IsExpense == false).ToList();
+            return categories;
         }
 
         public async Task DeleteCtegory(Guid id)

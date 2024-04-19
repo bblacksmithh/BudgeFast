@@ -1,5 +1,6 @@
 ﻿using Abp.Application.Services;
 using Abp.Domain.Repositories;
+using Abp.UI;
 using BudgeFast.Authorization.Users;
 using BudgeFast.Domains;
 using BudgeFast.Services.TransactionServices.Dtos;
@@ -39,6 +40,22 @@ namespace BudgeFast.Services.TransactionServices
                 TransactionDate = input.TransactionDate,
                 IsExpense = input.IsExpense,
             };
+            if (transaction.IsExpense)
+            {
+                if (transaction.BankAccount?.Balance > transaction.Amount)
+                {
+                    transaction.BankAccount.Balance -= transaction.Amount;
+                }
+                else
+                {
+                    throw new UserFriendlyException($"Not enough money in {transaction.BankAccount.AccountName}");
+                }
+            }
+            else
+            {
+                transaction.BankAccount.Balance += transaction.Amount;
+            }
+            await _bankAccountRepository.UpdateAsync(transaction.BankAccount);
             await _transactionRepository.InsertAsync(transaction);
             CurrentUnitOfWork.SaveChanges();
             return transaction;

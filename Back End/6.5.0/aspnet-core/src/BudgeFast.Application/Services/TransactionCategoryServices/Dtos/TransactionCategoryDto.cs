@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BudgeFast.Services.TransactionCategoryServices.Dtos
 {
-    public class CreateTransactionCategoryDto: EntityDto<Guid>
+    public class TransactionCategoryDto: EntityDto<Guid>
     {
         public string CategoryName { get; set; }
         public bool IsExpense { get; set; }
