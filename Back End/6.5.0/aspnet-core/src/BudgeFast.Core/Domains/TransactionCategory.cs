@@ -1,5 +1,4 @@
 ﻿using Abp.Domain.Entities.Auditing;
-using BudgeFast.Authorization.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace BudgeFast.Domains
 {
-    public class Note : FullAuditedEntity<Guid>
+    public class TransactionCategory: FullAuditedEntity<Guid>
     {
-        public User User { get; set; }
-        public string Content { get; set; }
-
+        public string CategoryName { get; set; }
+        public bool IsExpense { get; set; }
     }
 }
