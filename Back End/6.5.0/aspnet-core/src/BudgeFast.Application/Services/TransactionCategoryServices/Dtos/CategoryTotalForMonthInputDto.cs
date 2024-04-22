@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BudgeFast.Services.TransactionCategoryServices.Dtos
 {
-    public class CategoryTotalForMonthInputDto: EntityDto<Guid>
+    public class CategoryTotalForMonthInputDto
     {
         public long UserID { get; set; }
         public DateTime MonthOf {  get; set; }

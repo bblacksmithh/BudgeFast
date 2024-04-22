@@ -136,5 +136,29 @@ namespace BudgeFast.Services.TransactionServices
             }
             return result;
         }
+
+        public async Task DeleteTransaction(Guid id)
+        {
+            var transaction = _transactionRepository.GetAllIncluding(x => x.BankAccount).Where(x => x.Id == id).FirstOrDefault();
+
+            if (transaction.IsExpense ==  true)
+            {
+                transaction.BankAccount.Balance += transaction.Amount;
+                await _bankAccountRepository.UpdateAsync(transaction.BankAccount);
+            }
+            else
+            {
+                if (transaction.BankAccount.Balance < transaction.Amount)
+                {
+                    transaction.BankAccount.Balance -= transaction.Amount;
+                    await _bankAccountRepository.UpdateAsync(transaction.BankAccount);
+                }
+                else
+                {
+                    throw new UserFriendlyException("Bank Account cannot have a negative balance");
+                }
+            }
+            _transactionRepository.Delete(transaction);
+        }
     }
 }
