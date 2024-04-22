@@ -55,21 +55,37 @@ namespace BudgeFast.Services.TransactionCategoryServices
 
         public async Task<List<CategoryTotalForMonthOutputDto>> GetTotalExpensesPerCategoryPerMonth(CategoryTotalForMonthInputDto input)
         {
-            var transactions = _transactionRepository.GetAllIncluding(x => x.TransactionCategory, x => x.User, x => x.BankAccount).Where(x => x.User.Id == input.UserID && x.TransactionDate.Year == input.MonthOf.Year && x.TransactionDate.Month == input.MonthOf.Month).ToList();
+            var transactions = _transactionRepository.GetAllIncluding(x => x.TransactionCategory, x => x.User, x => x.BankAccount).Where(x => x.User.Id == input.UserID && x.TransactionDate.Year == input.MonthOf.Year && x.TransactionDate.Month == input.MonthOf.Month && x.IsExpense == true).ToList();
             var result = transactions
-            .GroupBy(t => t.TransactionCategory.CategoryName) // Group transactions by category
+            .GroupBy(t => t.TransactionCategory.CategoryName) // Group transactions
             .Select(g => new CategoryTotalForMonthOutputDto
                 {
-                    CategoryName = g.Key, // Category name
+                    CategoryName = g.Key,
                     AmountSpent = g.Sum(t => t.Amount) // Total amount spent in this category
                 })
-            .OrderByDescending(x => x.AmountSpent) // Sort in descending order based on AmountSpent
+            .OrderByDescending(x => x.AmountSpent) // Descending order
             .ToList();
 
             return result;
         }
 
-        public async Task DeleteCtegory(Guid id)
+        public async Task<List<CategoryTotalForMonthOutputDto>> GetTotalIncomePerCategoryPerMonth(CategoryTotalForMonthInputDto input)
+        {
+            var transactions = _transactionRepository.GetAllIncluding(x => x.TransactionCategory, x => x.User, x => x.BankAccount).Where(x => x.User.Id == input.UserID && x.TransactionDate.Year == input.MonthOf.Year && x.TransactionDate.Month == input.MonthOf.Month && x.IsExpense == false).ToList();
+            var result = transactions
+            .GroupBy(t => t.TransactionCategory.CategoryName) // Group transactions by category
+            .Select(g => new CategoryTotalForMonthOutputDto
+            {
+                CategoryName = g.Key,
+                AmountSpent = g.Sum(t => t.Amount) // Total amount
+            })
+            .OrderByDescending(x => x.AmountSpent) // Sort in descending order
+            .ToList();
+
+            return result;
+        }
+
+        public async Task DeleteCategory(Guid id)
         {
             await _transactionCategoryRepository.DeleteAsync(id);
         }
