@@ -14,10 +14,12 @@ namespace BudgeFast.Services.TransactionCategoryServices
     public class TransactionCategoryAppService: ApplicationService
     {
         private readonly IRepository<TransactionCategory, Guid> _transactionCategoryRepository;
+        private readonly IRepository<Transaction, Guid> _transactionRepository;
 
-        public TransactionCategoryAppService(IRepository<TransactionCategory, Guid> transactionCategoryRepository)
+        public TransactionCategoryAppService(IRepository<TransactionCategory, Guid> transactionCategoryRepository, IRepository<Transaction, Guid> transactionRepository)
         {
             _transactionCategoryRepository = transactionCategoryRepository;
+            _transactionRepository = transactionRepository;
         }
 
         public async Task<TransactionCategory> CreateCategory(TransactionCategoryDto input)
@@ -50,6 +52,12 @@ namespace BudgeFast.Services.TransactionCategoryServices
             var categories = _transactionCategoryRepository.GetAll().Where(x => x.IsExpense == false).ToList();
             return categories;
         }
+
+        //public async Task<List<CategoryTotalForMonthOutputDto>> GetTotalExpensesPerCategoryPerMonth(CategoryTotalForMonthInputDto input)
+        //{
+        //    var transactions = _transactionRepository.GetAllIncluding(x => x.TransactionCategory, x => x.User, x => x.BankAccount).Where(x => x.User.Id == input.UserID && x.TransactionDate.Year == input.MonthOf.Year && x.TransactionDate.Month == input.MonthOf.Month).ToList();
+        //    var result = new List<CategoryTotalForMonthOutputDto>();
+        //}
 
         public async Task DeleteCtegory(Guid id)
         {

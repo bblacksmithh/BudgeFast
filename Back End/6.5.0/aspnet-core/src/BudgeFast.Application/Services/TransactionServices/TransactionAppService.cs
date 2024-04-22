@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace BudgeFast.Services.TransactionServices
 {
-    public class TransactionAppService: ApplicationService
+    public class TransactionAppService : ApplicationService
     {
         private readonly IRepository<Transaction, Guid> _transactionRepository;
         private readonly IRepository<BankAccount, Guid> _bankAccountRepository;
@@ -27,7 +27,7 @@ namespace BudgeFast.Services.TransactionServices
             this._transactionCategoryRepository = transactionCategoryRepository;
             this._userManager = userManager;
         }
-        
+
         public async Task<Transaction> CreateTransaction(CreateTransactionDto input)
         {
             var transaction = new Transaction
@@ -74,7 +74,7 @@ namespace BudgeFast.Services.TransactionServices
                     TransactionCategory = expense.TransactionCategory.CategoryName,
                     Amount = expense.Amount,
                     Description = expense.Description,
-                    TransactionDate= expense.TransactionDate,
+                    TransactionDate = expense.TransactionDate,
                 });
             }
             return result;
@@ -84,7 +84,7 @@ namespace BudgeFast.Services.TransactionServices
         {
             var expenses = _transactionRepository.GetAllIncluding(x => x.BankAccount, x => x.TransactionCategory).Where(x => x.BankAccount.Id == accountId && x.IsExpense == true).ToList();
             var result = new List<OutputTransactionDto>();
-            foreach(var expense in expenses)
+            foreach (var expense in expenses)
             {
                 result.Add(new OutputTransactionDto
                 {
