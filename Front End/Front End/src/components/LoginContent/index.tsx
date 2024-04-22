@@ -24,7 +24,7 @@ const LoginContent = () => {
                             <Form.Item>
                                 <Input style={{ width: '250px', margin: 'auto', display: 'block' }} type="password" placeholder="password" />
                             </Form.Item>
-                            <Button className={styles.authButton} type="primary">Log in</Button>
+                            <button className={styles.button2}>Log in</button>
                         </Form>
                         <p>Don't have an account yet? <a style={{ textDecoration: 'none' }} href="/register">Create an account</a></p>
                     </div>

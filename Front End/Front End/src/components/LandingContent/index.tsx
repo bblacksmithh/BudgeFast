@@ -21,8 +21,8 @@ const LandingContent:React.FC<LandingContentProps> = ({goToLogin, goToRegister})
                     <p style={{ width: '700px', margin: '50px auto' }}>With BudgeFast, take control of your finances effortlessly. Whether you're a seasoned investor or just starting your journey to financial wellness, our intuitive platform empowers you to set and achieve your financial goals with ease.</p>
                     <p>Login or create an account to take start benefiting from the world's leading financial app</p>
                     <div style={{ alignContent: 'center', display: 'flex', flexDirection: 'row', gap: '15px', justifyContent: 'center' }}>
-                        <Button onClick={goToLogin} style={{ width: '90px' }} type='primary'>Login</Button>
-                        <Button onClick={goToRegister} style={{ width: '90px' }} type='primary'>Register</Button>
+                        <button onClick={goToLogin} className={styles.button2} >Login</button>
+                        <button onClick={goToRegister} className={styles.button2} >Register</button>
                     </div>
                 </Card>
             </div>
