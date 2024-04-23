@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BudgeFast.Services.Statement.Dtos
+namespace BudgeFast.Services.StatementServices.Dtos
 {
     public class CreateStatementDto: FullAuditedEntityDto<Guid>
     {

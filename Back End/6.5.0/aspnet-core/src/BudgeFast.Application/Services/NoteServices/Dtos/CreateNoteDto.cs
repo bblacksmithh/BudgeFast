@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BudgeFast.Services.Note.Dtos
+namespace BudgeFast.Services.NoteServices.Dtos
 {
     public class CreateNoteDto: FullAuditedEntityDto<Guid>
     {

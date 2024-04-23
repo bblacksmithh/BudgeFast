@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BudgeFast.Services.Note
+namespace BudgeFast.Services.StatementServices.Mapping
 {
-    public class NoteAppService
+    public class StatementMappingProfile
     {
     }
 }
