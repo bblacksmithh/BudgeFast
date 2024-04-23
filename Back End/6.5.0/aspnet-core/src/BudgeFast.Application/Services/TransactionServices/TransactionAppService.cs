@@ -44,7 +44,7 @@ namespace BudgeFast.Services.TransactionServices
             };
 
             if (_statementRepository.GetAllIncluding(x => x.User)
-                .Where(x => x.User.Id == input.UserId && x.MonthOf.Year == transaction.TransactionDate.Year && x.MonthOf.Month == transaction.TransactionDate.Year)
+                .Where(x => x.User.Id == input.UserId && x.MonthOf.Year == transaction.TransactionDate.Year && x.MonthOf.Month == transaction.TransactionDate.Month)
                 .Any())
             {
                 var statement = _statementRepository.GetAllIncluding(x => x.User)
@@ -54,7 +54,7 @@ namespace BudgeFast.Services.TransactionServices
                     statement.NetChange -= transaction.Amount;
                 }
                 else { statement.NetChange += transaction.Amount; }
-                statement.EndingBalance += statement.NetChange;
+                statement.EndingBalance = statement.StartingBalance + statement.NetChange;
                 transaction.StatementId = statement.Id;
 
                 await _statementRepository.UpdateAsync(statement);
@@ -63,6 +63,8 @@ namespace BudgeFast.Services.TransactionServices
             else
             {
                 var statement = new Statement();
+                statement.User = _userManager.GetUserById(input.UserId);
+                statement.MonthOf = transaction.TransactionDate;
                 statement.StartingBalance = 0;
                 statement.NetChange = 0;
                 var bankAccountBalances = _bankAccountRepository.GetAllIncluding(x => x.User)
