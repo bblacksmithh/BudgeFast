@@ -18,14 +18,16 @@ namespace BudgeFast.Services.TransactionServices
         private readonly IRepository<Transaction, Guid> _transactionRepository;
         private readonly IRepository<BankAccount, Guid> _bankAccountRepository;
         private readonly IRepository<TransactionCategory, Guid> _transactionCategoryRepository;
+        private readonly IRepository<Statement, Guid> _statementRepository;
         private readonly UserManager _userManager;
 
-        public TransactionAppService(IRepository<Transaction, Guid> transactionRepository, UserManager userManager, IRepository<BankAccount, Guid> bankAccountRepository, IRepository<TransactionCategory, Guid> transactionCategoryRepository)
+        public TransactionAppService(IRepository<Transaction, Guid> transactionRepository, UserManager userManager, IRepository<BankAccount, Guid> bankAccountRepository, IRepository<TransactionCategory, Guid> transactionCategoryRepository, IRepository<Statement, Guid> statementRepository)
         {
-            this._transactionRepository = transactionRepository;
-            this._bankAccountRepository = bankAccountRepository;
-            this._transactionCategoryRepository = transactionCategoryRepository;
-            this._userManager = userManager;
+            _transactionRepository = transactionRepository;
+            _bankAccountRepository = bankAccountRepository;
+            _transactionCategoryRepository = transactionCategoryRepository;
+            _statementRepository = statementRepository;
+            _userManager = userManager;
         }
 
         public async Task<Transaction> CreateTransaction(CreateTransactionDto input)
@@ -40,6 +42,49 @@ namespace BudgeFast.Services.TransactionServices
                 TransactionDate = input.TransactionDate,
                 IsExpense = input.IsExpense,
             };
+
+            if (_statementRepository.GetAllIncluding(x => x.User)
+                .Where(x => x.User.Id == input.UserId && x.MonthOf.Year == transaction.TransactionDate.Year && x.MonthOf.Month == transaction.TransactionDate.Year)
+                .Any())
+            {
+                var statement = _statementRepository.GetAllIncluding(x => x.User)
+                    .Where(x => x.User.Id == input.UserId && x.MonthOf.Month == transaction.TransactionDate.Month && x.MonthOf.Year == transaction.TransactionDate.Year).FirstOrDefault();
+                if (transaction.IsExpense == true)
+                {
+                    statement.NetChange -= transaction.Amount;
+                }
+                else { statement.NetChange += transaction.Amount; }
+                statement.EndingBalance += statement.NetChange;
+                transaction.StatementId = statement.Id;
+
+                await _statementRepository.UpdateAsync(statement);
+                await CurrentUnitOfWork.SaveChangesAsync();
+            }
+            else
+            {
+                var statement = new Statement();
+                statement.StartingBalance = 0;
+                statement.NetChange = 0;
+                var bankAccountBalances = _bankAccountRepository.GetAllIncluding(x => x.User)
+                    .Where(x => x.User.Id == input.UserId).Select(x => x.Balance)
+                    .ToList();
+                foreach (var balance in bankAccountBalances)
+                {
+                    statement.StartingBalance += balance;
+                }
+                statement.EndingBalance = statement.StartingBalance;
+                if (transaction.IsExpense == true)
+                {
+                    statement.NetChange -= transaction.Amount;
+                }
+                else { statement.NetChange += transaction.Amount;}
+                statement.EndingBalance += statement.NetChange;
+                transaction.StatementId = statement.Id;
+
+                await _statementRepository.InsertAsync(statement);
+                await CurrentUnitOfWork.SaveChangesAsync();
+            }
+
             if (transaction.IsExpense)
             {
                 if (transaction.BankAccount?.Balance > transaction.Amount)
@@ -57,6 +102,8 @@ namespace BudgeFast.Services.TransactionServices
             }
             await _bankAccountRepository.UpdateAsync(transaction.BankAccount);
             await _transactionRepository.InsertAsync(transaction);
+
+
             CurrentUnitOfWork.SaveChanges();
             return transaction;
         }
