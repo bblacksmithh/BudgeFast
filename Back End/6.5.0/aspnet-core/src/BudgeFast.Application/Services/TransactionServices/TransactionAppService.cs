@@ -189,25 +189,45 @@ namespace BudgeFast.Services.TransactionServices
         public async Task DeleteTransaction(Guid id)
         {
             var transaction = _transactionRepository.GetAllIncluding(x => x.BankAccount).Where(x => x.Id == id).FirstOrDefault();
+            var statement = _statementRepository.GetAll().Where(x => x.Id == transaction.StatementId).FirstOrDefault();
 
-            if (transaction.IsExpense ==  true)
+            if (transaction.TransactionDate.Year == DateTime.Now.Year && transaction.TransactionDate.Month == DateTime.Now.Month)
             {
-                transaction.BankAccount.Balance += transaction.Amount;
-                await _bankAccountRepository.UpdateAsync(transaction.BankAccount);
-            }
-            else
-            {
-                if (transaction.BankAccount.Balance < transaction.Amount)
+                if (transaction.IsExpense ==  true)
                 {
-                    transaction.BankAccount.Balance -= transaction.Amount;
+                    //statement adjustments
+                    statement.NetChange += transaction.Amount;
+                    statement.EndingBalance = statement.StartingBalance + statement.NetChange;
+                    await _statementRepository.UpdateAsync(statement);
+                
+                    //bank account adjustments
+                    transaction.BankAccount.Balance += transaction.Amount;
                     await _bankAccountRepository.UpdateAsync(transaction.BankAccount);
                 }
                 else
                 {
-                    throw new UserFriendlyException("Bank Account cannot have a negative balance");
+                    if (transaction.BankAccount.Balance < transaction.Amount)
+                    {
+                        //statement adjustments
+                        statement.NetChange += transaction.Amount;
+                        statement.EndingBalance = statement.StartingBalance + statement.NetChange;
+                        await _statementRepository.UpdateAsync(statement);
+
+                        //bank account adjustment
+                        transaction.BankAccount.Balance -= transaction.Amount;
+                        await _bankAccountRepository.UpdateAsync(transaction.BankAccount);
+                    }
+                    else
+                    {
+                        throw new UserFriendlyException("Bank Account cannot have a negative balance");
+                    }
                 }
+                _transactionRepository.Delete(transaction);
             }
-            _transactionRepository.Delete(transaction);
+            else
+            {
+                throw new UserFriendlyException("Can not delete a transaction older than 1 month");
+            }
         }
     }
 }
