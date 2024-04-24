@@ -3,8 +3,10 @@ import styles from './Styles/style.module.css'
 import Image from 'next/image';
 import { Form, Input, Button } from 'antd';
 import loginImage from '../../../public/login.png';
+import { useRouter } from 'next/navigation';
 
 const LoginContent = () => {
+    const router = useRouter();
     return (
         <main className={styles.main}>
             <div className={styles.container}>
@@ -24,7 +26,7 @@ const LoginContent = () => {
                             <Form.Item>
                                 <Input style={{ width: '250px', margin: 'auto', display: 'block' }} type="password" placeholder="password" />
                             </Form.Item>
-                            <button className={styles.button2}>Log in</button>
+                            <button onClick={() => {router.push('/dashboard')}} className={styles.button2}>Log in</button>
                         </Form>
                         <p>Don't have an account yet? <a style={{ textDecoration: 'none' }} href="/register">Create an account</a></p>
                     </div>
