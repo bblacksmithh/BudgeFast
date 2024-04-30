@@ -17,6 +17,8 @@ export function transactionReducer(state: ITransactionStateContext, action: Redu
             }
         case TransactionActions.CREATE_TRANSACTION:
             return state;
+        case TransactionActions.DELETE_TRANSACTION:
+            return state;
         default:
             return state;
     }

@@ -8,6 +8,7 @@ import { Menu, MenuProps } from 'antd';
 import { DashboardOutlined, LogoutOutlined, MoneyCollectOutlined } from '@ant-design/icons';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import { useRouter } from 'next/navigation';
 
 const items: MenuProps['items'] = [
@@ -30,6 +31,11 @@ const items: MenuProps['items'] = [
         label: 'Statements',
         key: 'statements',
         icon: <ReceiptLongIcon />,
+    },
+    {
+        label: 'Bank Accounts',
+        key: 'bankaccounts',
+        icon: <AccountBalanceIcon />,
     },
 ]
 

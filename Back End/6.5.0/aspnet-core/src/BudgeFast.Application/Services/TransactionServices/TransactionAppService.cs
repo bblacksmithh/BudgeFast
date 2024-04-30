@@ -191,7 +191,7 @@ namespace BudgeFast.Services.TransactionServices
             var transaction = _transactionRepository.GetAllIncluding(x => x.BankAccount).Where(x => x.Id == id).FirstOrDefault();
             var statement = _statementRepository.GetAll().Where(x => x.Id == transaction.StatementId).FirstOrDefault();
 
-            if (transaction.TransactionDate.Year == DateTime.Now.Year && transaction.TransactionDate.Month == DateTime.Now.Month)
+            if (transaction.TransactionDate.Year >= DateTime.Now.Year && transaction.TransactionDate.Month >= DateTime.Now.Month)
             {
                 if (transaction.IsExpense ==  true)
                 {

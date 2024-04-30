@@ -11,12 +11,13 @@
 
 .header {
     width: 100%;
+    font-size: 25px;
     display: block;
     text-align: center;
     color: #343434;
     font-weight: 100;
     font-family:'Times New Roman', Times, serif;
-    background-color: #cdcdcd;
+    background-color: rgba(201, 201, 201, 0.356);
 }
 
 .incomeAndExpenses {
@@ -42,7 +43,7 @@
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 18px;
     font-weight:lighter;
-    background-color: rgba(206, 206, 206, 0.5);
+    background-color: rgba(201, 201, 201, 0.356);
     width: fit-content;
     margin: 5px auto 5px;
     padding: 5px;

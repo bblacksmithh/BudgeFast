@@ -2,7 +2,7 @@
 
 import React, { FC, PropsWithChildren, useContext, useReducer, useState } from "react";
 import axios from "axios";
-import { ICreateTransaction, ITransaction, TRANSACTION_CONTEXT_INITIAL_STATE, TransactionActionContext, TransactionStateContext } from "./context";
+import { ICreateTransaction, IDeleteTransaction, ITransaction, TRANSACTION_CONTEXT_INITIAL_STATE, TransactionActionContext, TransactionStateContext } from "./context";
 import { transactionReducer } from "./reducer";
 import { getAllExpensesForUserAction, getAllIncomeForUserAction, createTransactionAction } from "./actions";
 
@@ -75,6 +75,38 @@ const TransactionProvider: FC<PropsWithChildren<any>> = ({ children }) => {
                 })
         });
 
+    const deleteTransaction = (transactionId: IDeleteTransaction) => 
+        new Promise<void>((resolve, reject) => {
+            setIsInProgress(true);
+            axios.delete(`https://localhost:44311/api/services/app/Transaction/DeleteTransaction?id=${transactionId.id}`)
+            .then(response => {
+                resolve(response.data);
+                axios.get('https://localhost:44311/api/services/app/Transaction/GetAllExpensesForUser?UserId=1')
+                    .then((expenseResult) => {
+                        dispatch(getAllExpensesForUserAction(expenseResult.data.result));
+                        // resolve(expenseResult.data);
+                    })
+                    .catch (e => {
+                        setIsInProgress(false);
+                        reject(e.message);
+                    })
+                    axios.get('https://localhost:44311/api/services/app/Transaction/GetAllIncomeForUser?UserId=1')
+                    .then((incomeResult) => {
+                        dispatch(getAllIncomeForUserAction(incomeResult.data.result));
+                        // resolve(incomeResult.data);
+                    })
+                    .catch (e => {
+                        setIsInProgress(false);
+                        reject(e.message);
+                    })
+                    setIsInProgress(false);
+            })
+            .catch(e => {
+                reject(e.message);
+                setIsInProgress(false)
+            })
+        })
+
     return (
         <TransactionStateContext.Provider
             value={{
@@ -86,6 +118,7 @@ const TransactionProvider: FC<PropsWithChildren<any>> = ({ children }) => {
                     getAllIncomeForUser,
                     getAllExpensesForUser,
                     createTransaction,
+                    deleteTransaction
                 }}>
                 {children}
             </TransactionActionContext.Provider>
