@@ -1,6 +1,3 @@
-.main {
-}
-
 .navbarContainer {
     width: 100%;
 }
@@ -26,8 +23,12 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    align-items: center;
     gap: 10px;
+}
+
+.incomeAndExpenses button {
+    display: block;
+    margin: auto 10px 10px auto;
 }
 
 .income {

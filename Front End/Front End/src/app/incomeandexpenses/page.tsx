@@ -1,19 +1,16 @@
 "use client"
 
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import styles from './Styles/style.module.css';
 import MainNavbar from '@/components/MainNavbar';
-import { Space, Table, TableProps, Tag } from 'antd';
+import { Button, Space, Table, TableProps, Tag } from 'antd';
+import IncomeModal from '@/components/IncomeModal/IncomeModal';
+import { IAllIncome, ITransaction, TransactionActionContext, TransactionStateContext } from '@/providers/transactions/context';
+import ExpenseModal from '@/components/ExpenseModal/ExpenseModal';
+import moment from 'moment';
 
-interface DataType {
-  key: string;
-  description: string;
-  amount: number;
-  category: string;
-  date: Date;
-}
 
-const columns: TableProps<DataType>['columns'] = [
+const columns: TableProps<ITransaction>['columns'] = [
   {
     title: 'Description',
     dataIndex: 'description',
@@ -23,16 +20,22 @@ const columns: TableProps<DataType>['columns'] = [
     title: 'Amount',
     dataIndex: 'amount',
     key: 'amount',
+    render: (_, record) => (
+      <span>R {record.amount.toFixed(2)}</span>
+    )
   },
   {
     title: 'Category',
-    dataIndex: 'category',
-    key: 'category',
+    dataIndex: 'transactionCategory',
+    key: 'transactionCategory',
   },
   {
     title: 'Date',
-    key: 'date',
-    dataIndex: 'date',
+    dataIndex: 'transactionDate',
+    key: 'transactionDate',
+    render: (_, record) => (
+      <span>{moment(record.transactionDate).format('DD-MMM-YYYY')}</span>
+    )
   },
   {
     title: 'Action',
@@ -45,87 +48,32 @@ const columns: TableProps<DataType>['columns'] = [
   },
 ];
 
-const aDate = new Date;
 
-const data: DataType[] = [
-  {
-    key: '1',
-    description: 'Groceries for the week',
-    amount: 920.98,
-    category: 'Groceries',
-    date: aDate,
-  },
-  {
-    key: '1',
-    description: 'Groceries for the week',
-    amount: 920.98,
-    category: 'Groceries',
-    date: aDate,
-  },
-  {
-    key: '1',
-    description: 'Groceries for the week',
-    amount: 920.98,
-    category: 'Groceries',
-    date: aDate,
-  },
-  {
-    key: '1',
-    description: 'Groceries for the week',
-    amount: 920.98,
-    category: 'Groceries',
-    date: aDate,
-  },
-  {
-    key: '1',
-    description: 'Groceries for the week',
-    amount: 920.98,
-    category: 'Groceries',
-    date: aDate,
-  },
-  {
-    key: '1',
-    description: 'Groceries for the week',
-    amount: 920.98,
-    category: 'Groceries',
-    date: aDate,
-  },
-  {
-    key: '1',
-    description: 'Groceries for the week',
-    amount: 920.98,
-    category: 'Groceries',
-    date: aDate,
-  },
-  {
-    key: '1',
-    description: 'Groceries for the week',
-    amount: 920.98,
-    category: 'Groceries',
-    date: aDate,
-  },
-  {
-    key: '1',
-    description: 'Groceries for the week',
-    amount: 920.98,
-    category: 'Groceries',
-    date: aDate,
-  },
-  {
-    key: '1',
-    description: 'Groceries for the week',
-    amount: 920.98,
-    category: 'Groceries',
-    date: aDate,
-  },
-];
+const IncomeAndExpenses = () => {
 
 
-const Dashboard = () => {
+  const { allIncome, allExpenses } = useContext(TransactionStateContext);
+  const { getAllIncomeForUser, getAllExpensesForUser } = useContext(TransactionActionContext);
+
+  useEffect(() => {
+    getAllIncomeForUser()
+      .then(() => {
+      })
+      .catch((error) => {
+        console.log(error.message);
+      })
+    getAllExpensesForUser()
+      .then(() => {
+      })
+      .catch((error) => {
+        console.log(error.message);
+      })
+  }, [])
+
   return (
     <main className={styles.main}>
       <div className={styles.navbarContainer}>
-        <MainNavbar activeItem={'incomeandexpenses'}/>
+        <MainNavbar activeItem={'incomeandexpenses'} />
         <div className={styles.ContentContainer}>
           <div className={styles.header}>
             <h1>Income & Expenses</h1>
@@ -133,11 +81,13 @@ const Dashboard = () => {
           <div className={styles.incomeAndExpenses}>
             <div className={styles.income}>
               <p>Income</p>
-              <Table columns={columns} dataSource={data}/>
+              <IncomeModal />
+              <Table columns={columns} dataSource={allIncome} rowKey='id' />
             </div>
             <div className={styles.expenses}>
               <p>Expenses</p>
-              <Table columns={columns} dataSource={data}/>
+              <ExpenseModal />
+              <Table columns={columns} dataSource={allExpenses} rowKey='id' />
             </div>
           </div>
         </div>
@@ -146,4 +96,4 @@ const Dashboard = () => {
   );
 }
 
-export default Dashboard
+export default IncomeAndExpenses;

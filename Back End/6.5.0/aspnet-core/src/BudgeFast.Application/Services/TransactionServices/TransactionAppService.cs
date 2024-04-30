@@ -112,14 +112,14 @@ namespace BudgeFast.Services.TransactionServices
 
         public async Task<List<OutputTransactionDto>> GetAllExpensesForUser(long UserId)
         {
-            var expenses = _transactionRepository.GetAllIncluding(x => x.User, x => x.BankAccount, x => x.TransactionCategory).Where(x => x.User.Id == UserId && x.IsExpense == true).ToList();
+            var expenses = _transactionRepository.GetAllIncluding(x => x.User, x => x.BankAccount, x => x.TransactionCategory).Where(x => x.User.Id == UserId && x.IsExpense == true).OrderByDescending(x => x.TransactionDate).ToList();
             var result = new List<OutputTransactionDto>();
             foreach (var expense in expenses)
             {
                 result.Add(new OutputTransactionDto
                 {
                     Id = expense.Id,
-                    BankAccountId = expense.BankAccount.Id,
+                    AccountName = expense.BankAccount.AccountName,
                     TransactionCategory = expense.TransactionCategory.CategoryName,
                     Amount = expense.Amount,
                     Description = expense.Description,
@@ -138,7 +138,7 @@ namespace BudgeFast.Services.TransactionServices
                 result.Add(new OutputTransactionDto
                 {
                     Id = expense.Id,
-                    BankAccountId = expense.BankAccount.Id,
+                    AccountName = expense.BankAccount.AccountName,
                     TransactionCategory = expense.TransactionCategory.CategoryName,
                     Amount = expense.Amount,
                     Description = expense.Description,
@@ -150,14 +150,14 @@ namespace BudgeFast.Services.TransactionServices
 
         public async Task<List<OutputTransactionDto>> GetAllIncomeForUser(long UserId)
         {
-            var expenses = _transactionRepository.GetAllIncluding(x => x.User, x => x.BankAccount, x => x.TransactionCategory).Where(x => x.User.Id == UserId && x.IsExpense == false).ToList();
+            var expenses = _transactionRepository.GetAllIncluding(x => x.User, x => x.BankAccount, x => x.TransactionCategory).Where(x => x.User.Id == UserId && x.IsExpense == false).OrderByDescending(x => x.TransactionDate).ToList();
             var result = new List<OutputTransactionDto>();
             foreach (var expense in expenses)
             {
                 result.Add(new OutputTransactionDto
                 {
                     Id = expense.Id,
-                    BankAccountId = expense.BankAccount.Id,
+                    AccountName = expense.BankAccount.AccountName,
                     TransactionCategory = expense.TransactionCategory.CategoryName,
                     Amount = expense.Amount,
                     Description = expense.Description,
@@ -176,7 +176,7 @@ namespace BudgeFast.Services.TransactionServices
                 result.Add(new OutputTransactionDto
                 {
                     Id = expense.Id,
-                    BankAccountId = expense.BankAccount.Id,
+                    AccountName = expense.BankAccount.AccountName,
                     TransactionCategory = expense.TransactionCategory.CategoryName,
                     Amount = expense.Amount,
                     Description = expense.Description,
