@@ -17,7 +17,7 @@ namespace BudgeFast.EntityFrameworkCore
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<TransactionCategory> TransactionCategories { get; set; }
         public DbSet<Budget> Budgets { get; set; }
-        public DbSet<BudgetCategory> BudgetCategories { get; set; }
+        public DbSet<Budget> BudgetCategories { get; set; }
 
         public BudgeFastDbContext(DbContextOptions<BudgeFastDbContext> options)
             : base(options)
