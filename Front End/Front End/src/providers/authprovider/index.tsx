@@ -1,3 +1,4 @@
+"use client"
 import React, { FC, PropsWithChildren, useContext, useReducer, useState } from "react";
 import { userAuthReducer } from "./reducer";
 import { IUserAuthLogin, IUserAuthResponse, IUserCreate, USER_AUTH_CONTEXT_INITIAL_STATE, UserAuthActionContext, UserAuthStateContext } from "./context";
@@ -34,7 +35,7 @@ const UserAuthProvider: FC<PropsWithChildren<any>> = ({ children }) => {
         new Promise((resolve, reject) => {
             console.log('userinput', userInput)
             setIsInProgress(true);
-            axios.post('https://localhost:44311/api/services/app/User/CreateUser', userInput)
+            axios.post('https://localhost:44311/api/services/app/User/Create', userInput)
             .then((response) => {
                 console.log('resp',response);
                 
@@ -47,20 +48,6 @@ const UserAuthProvider: FC<PropsWithChildren<any>> = ({ children }) => {
                     setErrorCreate(e.message);
                     reject(e.message);
                 })
-                .then(() => {
-                    setIsInProgress(true);
-                    axios.post('https://localhost:44311/api/TokenAuth/Authenticate', { userNameOrEmail: userInput.userName || userInput.emailAddress,  password: userInput.password })
-                    .then((response2) => {
-                        resolve(response2.data);
-                        setIsInProgress(false);
-                        dispatch(response2.data);
-                    })
-                    .catch(e => {
-                        reject(e.message);
-                        console.log(e.message);
-                    })
-                }
-                )
         })
 
     return (

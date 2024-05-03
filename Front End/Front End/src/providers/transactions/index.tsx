@@ -13,7 +13,7 @@ const TransactionProvider: FC<PropsWithChildren<any>> = ({ children }) => {
     const getAllIncomeForUser = (): Promise<ITransaction[]> =>
         new Promise((resolve, reject) => {
             {
-                axios.get('https://localhost:44311/api/services/app/Transaction/GetAllIncomeForUser?UserId=1')
+                axios.get(`https://localhost:44311/api/services/app/Transaction/GetAllIncomeForUser?UserId=${localStorage.getItem('userId')}`)
                     .then((response) => {
                         console.log(response.data.result)
                         dispatch(getAllIncomeForUserAction(response.data.result));
@@ -30,7 +30,7 @@ const TransactionProvider: FC<PropsWithChildren<any>> = ({ children }) => {
     const getAllExpensesForUser = (): Promise<ITransaction[]> =>
         new Promise((resolve, reject) => {
             setIsInProgress(true);
-            axios.get('https://localhost:44311/api/services/app/Transaction/GetAllExpensesForUser?UserId=1')
+            axios.get(`https://localhost:44311/api/services/app/Transaction/GetAllExpensesForUser?UserId=${localStorage.getItem('userId')}`)
                 .then((response) => {
                     dispatch(getAllExpensesForUserAction(response.data.result));
                     setIsInProgress(false);
@@ -48,7 +48,7 @@ const TransactionProvider: FC<PropsWithChildren<any>> = ({ children }) => {
             axios.post('https://localhost:44311/api/services/app/Transaction/CreateTransaction', createTransaction)
                 .then((response) => {
                     // dispatch(createTransactionAction(response.data));
-                    axios.get('https://localhost:44311/api/services/app/Transaction/GetAllExpensesForUser?UserId=1')
+                    axios.get(`https://localhost:44311/api/services/app/Transaction/GetAllExpensesForUser?UserId=${localStorage.getItem('userId')}`)
                     .then((expenseResult) => {
                         dispatch(getAllExpensesForUserAction(expenseResult.data.result));
                         // resolve(expenseResult.data);
@@ -57,7 +57,7 @@ const TransactionProvider: FC<PropsWithChildren<any>> = ({ children }) => {
                         setIsInProgress(false);
                         reject(e.message);
                     })
-                    axios.get('https://localhost:44311/api/services/app/Transaction/GetAllIncomeForUser?UserId=1')
+                    axios.get(`https://localhost:44311/api/services/app/Transaction/GetAllIncomeForUser?UserId=${localStorage.getItem('userId')}`)
                     .then((incomeResult) => {
                         dispatch(getAllIncomeForUserAction(incomeResult.data.result));
                         // resolve(incomeResult.data);
@@ -81,7 +81,7 @@ const TransactionProvider: FC<PropsWithChildren<any>> = ({ children }) => {
             axios.delete(`https://localhost:44311/api/services/app/Transaction/DeleteTransaction?id=${transactionId.id}`)
             .then(response => {
                 resolve(response.data);
-                axios.get('https://localhost:44311/api/services/app/Transaction/GetAllExpensesForUser?UserId=1')
+                axios.get(`https://localhost:44311/api/services/app/Transaction/GetAllExpensesForUser?UserId=${localStorage.getItem('userId')}`)
                     .then((expenseResult) => {
                         dispatch(getAllExpensesForUserAction(expenseResult.data.result));
                         // resolve(expenseResult.data);
@@ -90,7 +90,7 @@ const TransactionProvider: FC<PropsWithChildren<any>> = ({ children }) => {
                         setIsInProgress(false);
                         reject(e.message);
                     })
-                    axios.get('https://localhost:44311/api/services/app/Transaction/GetAllIncomeForUser?UserId=1')
+                    axios.get(`https://localhost:44311/api/services/app/Transaction/GetAllIncomeForUser?UserId=${localStorage.getItem('userId')}`)
                     .then((incomeResult) => {
                         dispatch(getAllIncomeForUserAction(incomeResult.data.result));
                         // resolve(incomeResult.data);

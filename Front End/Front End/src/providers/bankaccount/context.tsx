@@ -8,7 +8,7 @@ export interface IBankAccount {
 }
 
 export interface ICreateBankAccount {
-    userId: string,
+    userId: number,
     accountName: string,
     accountType: string,
     balance: number,

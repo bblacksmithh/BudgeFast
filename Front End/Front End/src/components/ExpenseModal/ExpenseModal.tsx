@@ -30,8 +30,14 @@ const ExpenseModal = () => {
         setIsModalOpen(false);
     };
 
+    const userIdString = localStorage.getItem('userId');
+    let userId: number;
+    if (userIdString !== null) {
+        userId = parseInt(userIdString);
+    }
+
     const onFinish = (values: any) => {
-        const input: ICreateTransaction = { userId: 1, bankAccountId: values.account, transactionCategoryId: values.category, amount: values.amount, description: values.description, transactionDate: values.date, isExpense: true }
+        const input: ICreateTransaction = { userId: userId, bankAccountId: values.account, transactionCategoryId: values.category, amount: values.amount, description: values.description, transactionDate: values.date, isExpense: true }
         console.log('values', values);
         createTransaction(input).then(() => {
             handleOk();

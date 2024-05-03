@@ -8,11 +8,12 @@ export interface IUserAuthLogin {
 }
 
 export interface IUserCreate {
-    userName?: string;
-    name?: string;
-    surname?: string;
-    emailAddress?: string;
-    password?: string;
+    userName: string;
+    name: string;
+    surname: string;
+    emailAddress: string;
+    password: string;
+    isActive: boolean;
 }
 
 export interface IUserAuthResponse {

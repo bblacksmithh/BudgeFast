@@ -81,10 +81,11 @@ namespace BudgeFast.Services.TransactionServices
                 }
                 else { statement.NetChange += transaction.Amount;}
                 statement.EndingBalance += statement.NetChange;
-                transaction.StatementId = statement.Id;
-
                 await _statementRepository.InsertAsync(statement);
                 await CurrentUnitOfWork.SaveChangesAsync();
+                statement = _statementRepository.GetAllIncluding(x => x.User).Where(x => x.MonthOf.Year == transaction.TransactionDate.Year && x.MonthOf.Month == transaction.TransactionDate.Month && x.User.Id == transaction.User.Id).FirstOrDefault();
+                transaction.StatementId = statement.Id;
+
             }
 
             if (transaction.IsExpense)
@@ -206,7 +207,7 @@ namespace BudgeFast.Services.TransactionServices
                 }
                 else
                 {
-                    if (transaction.BankAccount.Balance < transaction.Amount)
+                    if (transaction.BankAccount.Balance > transaction.Amount)
                     {
                         //statement adjustments
                         statement.NetChange += transaction.Amount;

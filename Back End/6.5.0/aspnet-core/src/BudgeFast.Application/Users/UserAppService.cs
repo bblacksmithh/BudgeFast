@@ -25,7 +25,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BudgeFast.Users
 {
-    [AbpAuthorize(PermissionNames.Pages_Users)]
     public class UserAppService : AsyncCrudAppService<User, UserDto, long, PagedUserResultRequestDto, CreateUserDto, UserDto>, IUserAppService
     {
         private readonly UserManager _userManager;
@@ -52,7 +51,7 @@ namespace BudgeFast.Users
             _abpSession = abpSession;
             _logInManager = logInManager;
         }
-
+        [AbpAllowAnonymous]
         public override async Task<UserDto> CreateAsync(CreateUserDto input)
         {
             CheckCreatePermission();

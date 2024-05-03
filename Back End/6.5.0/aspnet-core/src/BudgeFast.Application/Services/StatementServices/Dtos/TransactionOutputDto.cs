@@ -14,5 +14,7 @@ namespace BudgeFast.Services.StatementServices.Dtos
         public decimal Amount { get; set; }
         public string Category { get; set; }
         public string AccountName { get; set; }
+        public bool isExpense { get; set; }
+        public DateTime transactionDate { get; set; }
     }
 }

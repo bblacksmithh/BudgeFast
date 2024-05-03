@@ -38,14 +38,16 @@ namespace BudgeFast.Services.StatementServices
             {
                 var transactionDtos = await _transactionRepository
                     .GetAllIncluding(t => t.User, t => t.BankAccount, t => t.TransactionCategory)
-                    .Where(t => t.User.Id == userId && t.StatementId == statement.Id)
+                    .Where(t => t.User.Id == userId && t.StatementId == statement.Id).OrderByDescending(x => x.TransactionDate)
                     .Select(transaction => new TransactionOutputDto
                     {
                         Id = transaction.Id,
                         Description = transaction.Description,
                         Amount = transaction.Amount,
                         Category = transaction.TransactionCategory.CategoryName,
-                        AccountName = transaction.BankAccount.AccountName
+                        AccountName = transaction.BankAccount.AccountName,
+                        isExpense = transaction.IsExpense,
+                        transactionDate = transaction.TransactionDate,
                     }).ToListAsync();
 
                 var statementDto = new StatementOutputDto

@@ -13,7 +13,7 @@ const BankAccountProvider: FC<PropsWithChildren<any>> = ({ children }) => {
     const getAllBankAccountsForUser = (): Promise<IBankAccount[]> =>
         new Promise((resolve, reject) => {
             {
-                axios.get('https://localhost:44311/api/services/app/BankAccount/GetAllBankAccountsByUserId?input=1')
+                axios.get(`https://localhost:44311/api/services/app/BankAccount/GetAllBankAccountsByUserId?input=${localStorage.getItem('userId')}`)
                     .then((response) => {
                         console.log(response.data.result)
                         dispatch(getAllBankAccountsForUserAction(response.data.result));
@@ -33,7 +33,7 @@ const BankAccountProvider: FC<PropsWithChildren<any>> = ({ children }) => {
             axios.post('https://localhost:44311/api/services/app/BankAccount/CreateBankAccount', createBankAccount)
                 .then((response) => {
                     // dispatch(createTransactionAction(response.data));
-                    axios.get('https://localhost:44311/api/services/app/BankAccount/GetAllBankAccountsByUserId?input=1')
+                    axios.get(`https://localhost:44311/api/services/app/BankAccount/GetAllBankAccountsByUserId?input=${localStorage.getItem('userId')}`)
                     .then((allAccountResponse) => {
                         dispatch(getAllBankAccountsForUserAction(allAccountResponse.data.result));
                         // resolve(expenseResult.data);
