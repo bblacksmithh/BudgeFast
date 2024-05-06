@@ -9,6 +9,13 @@ export interface ITransaction {
     id: string,
 }
 
+export interface IIncomeVsExpenses {
+    month: string,
+    year: string,
+    income: number,
+    expenses: number,
+}
+
 export interface IAllExpenses {
     result: ITransaction[]
 }
@@ -32,6 +39,7 @@ export interface IDeleteTransaction {
 }
 
 export interface ITransactionStateContext {
+    sixMonthIncomeVsExpenses?: IIncomeVsExpenses[],
     allExpenses?: ITransaction[],
     allIncome?: ITransaction[],
     isInProgress?: any,
@@ -44,6 +52,7 @@ export interface ITransactionActionContext {
     getAllIncomeForUser: () => Promise<ITransaction[]>,
     createTransaction: (createTransaction: ICreateTransaction) => Promise<void>,
     deleteTransaction: (transactionId: IDeleteTransaction) => Promise<void>,
+    getIncomeVsExpenses: () => Promise<IIncomeVsExpenses[]>,
 }
 
 export const TRANSACTION_CONTEXT_INITIAL_STATE: ITransactionStateContext = {};

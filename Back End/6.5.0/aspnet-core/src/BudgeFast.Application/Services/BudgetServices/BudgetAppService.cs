@@ -17,92 +17,58 @@ namespace BudgeFast.Services.BudgetServices
     public class BudgetAppService: ApplicationService
     {
         private readonly IRepository<Budget, Guid> _budgetRepository;
-        private readonly IRepository<BudgetCategory, Guid> _budgetCategoryRepository;
         private readonly IRepository<TransactionCategory, Guid> _transactionCategoryRepository;
         private readonly UserManager _userManager;
 
-        public BudgetAppService(IRepository<Budget, Guid> budgetRepository, IRepository<BudgetCategory, Guid> budgetCategoryRepository, UserManager userManager, IRepository<TransactionCategory, Guid> transactionCategoryRepository)
+        public BudgetAppService(IRepository<Budget, Guid> budgetRepository, IRepository<Budget, Guid> budgetCategoryRepository, UserManager userManager, IRepository<TransactionCategory, Guid> transactionCategoryRepository)
         {
             _budgetRepository = budgetRepository;
-            _budgetCategoryRepository = budgetCategoryRepository;
             _userManager = userManager;
             _transactionCategoryRepository = transactionCategoryRepository;
         }
 
-        public async Task CreateBudget(CreateBudgetDto input)
+        public async Task AddBudget(AddBudget input)
         {
-            if (_budgetRepository.GetAll().Where(x => x.User.Id == input.UserId).Any())
+            if (_budgetRepository.GetAllIncluding(x => x.User, x => x.TransactionCategory)
+                .Where(x => x.User.Id == input.UserId && x.TransactionCategory.Id == input.CategoryId).Any())
             {
-                throw new UserFriendlyException("User already have a budget set up...");
+                throw new UserFriendlyException("Budget Already Exists");
             }
             else
             {
                 var budget = new Budget()
                 {
+                    TransactionCategory = await _transactionCategoryRepository.GetAsync(input.CategoryId),
+                    BudgetAmount = input.Amount,
                     User = _userManager.GetUserById(input.UserId),
-                    BudgetName = input.BudgetName,
-                };
+                };  
                 await _budgetRepository.InsertAsync(budget);
-                await CurrentUnitOfWork.SaveChangesAsync();
-
-                var categoriesInput = input.Categories;
-                foreach ( var category in categoriesInput )
-                {
-                    var categories = new BudgetCategory()
-                    {
-                        Budget = budget,
-                        TransactionCategory = await _transactionCategoryRepository.GetAsync(category.CategoryId),
-                        BudgetAmount = category.Amount,
-                    };
-                    await _budgetCategoryRepository.InsertAsync(categories);
-                    await CurrentUnitOfWork.SaveChangesAsync();
-                }
+                CurrentUnitOfWork.SaveChanges();
             }
         }
 
-        public async Task<DisplayBudgetDto> GetBudgetForUser(long userId)
+        public async Task<List<DisplayBudgetDto>> GetBudgetsForUser(long userId)
         {
-            var budget = _budgetRepository.GetAllIncluding(x => x.User)
+            var budgets = await _budgetRepository.GetAllIncluding(x => x.User, x => x.TransactionCategory)
                                           .Where(x => x.User.Id == userId)
-                                          .FirstOrDefault();
-            var budgetCategories = _budgetCategoryRepository.GetAllIncluding(x => x.TransactionCategory, x => x.Budget)
-                                                            .Where(x => x.Budget.Id == budget.Id)
-                                                            .ToList();
+                                          .ToListAsync();
 
-            var result = new DisplayBudgetDto();
-            result.BudgetName = budget.BudgetName;
-            foreach ( var category in budgetCategories )
+            var result = new List<DisplayBudgetDto>();
+            foreach (var budget in budgets)
             {
-                result.Categories.Add(new BudgetCategoryOutputDto()
-                {
-                    CategoryId = category.TransactionCategory.Id,
-                    CategoryName = category.TransactionCategory.CategoryName,
-                    Amount = category.BudgetAmount,
-                });
+                var budgetDto = new DisplayBudgetDto();
+                budgetDto.Amount = budget.BudgetAmount;
+                budgetDto.Category = budget.TransactionCategory.CategoryName;
+                budgetDto.Id = budget.Id;
+                result.Add(budgetDto);
             }
             return result;
         }
 
-        public async Task DeleteBudgetForUser(long userId)
+        public async Task DeleteBudgetForUser(Guid budgetId)
         {
-            var budget = await _budgetRepository.GetAllIncluding(x => x.User)
-                                                 .FirstOrDefaultAsync(x => x.User.Id == userId);
-
-            if (budget != null)
-            {
-                var categories = await _budgetCategoryRepository.GetAllIncluding(x => x.Budget)
-                                                                .Where(x => x.Budget.Id == budget.Id)
-                                                                .ToListAsync();
-
-                foreach (var category in categories)
-                {
-                    await _budgetCategoryRepository.DeleteAsync(category);
-                }
-
-                await _budgetRepository.DeleteAsync(budget);
-
-                await CurrentUnitOfWork.SaveChangesAsync(); // Assuming CurrentUnitOfWork is a DbContext or similar
-            }
+            var budget = await _budgetRepository.GetAsync(budgetId);
+            await _budgetRepository.DeleteAsync(budget);
         }
     }
 }

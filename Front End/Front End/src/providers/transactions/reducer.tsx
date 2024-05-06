@@ -15,6 +15,11 @@ export function transactionReducer(state: ITransactionStateContext, action: Redu
                 ...state,
                 ...payload
             }
+        case TransactionActions.GET_INCOME_VS_EXPENSES:
+            return {
+                ...state,
+                ...payload
+            }
         case TransactionActions.CREATE_TRANSACTION:
             return state;
         case TransactionActions.DELETE_TRANSACTION:

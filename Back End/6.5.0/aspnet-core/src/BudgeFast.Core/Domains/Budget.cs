@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace BudgeFast.Domains
 {
-    public class BudgetCategory: FullAuditedEntity<Guid>
+    public class Budget: FullAuditedEntity<Guid>
     {
-        public Budget Budget { get; set; }
+        public User User { get; set; }
         public TransactionCategory TransactionCategory { get; set; }
         public decimal BudgetAmount { get; set; }
     }

@@ -1,46 +1,53 @@
 "use client"
+
 import React, { useContext, useEffect } from 'react'
-import styles from './Styles/style.module.css';
+import styles from './Styles/styles.module.css';
 import MainNavbar from '@/components/MainNavbar';
 import { Button, Card, List } from 'antd';
-import { BankAccountActionContext, BankAccountStateContext, ICreateBankAccount } from '@/providers/bankaccount/context';
-import BankAccountModal from '@/components/BankAccountModal/BankAccountModal';
+import { BudgetActionContext, BudgetStateContext } from '@/providers/budget/context';
+import AddIcon from '@mui/icons-material/Add';
+import BudgetModal from '@/components/BudgetModal/BudgetModal';
 
 const Budget = () => {
-    const { getBudgetForUser, createBudget, deleteBudget } = useContext(BudgetActionContext)
-    const { budget } = useContext(BudgetStateContext)
+    const { getBudgetsForUser, deleteBudget } = useContext(BudgetActionContext)
+    const { budgets } = useContext(BudgetStateContext)
 
     useEffect(() => {
-        getBudgetForUser()
+        getBudgetsForUser()
     }, [])
+
+    let totalBudget = 0;
+
+    budgets?.forEach((budget) => {
+        totalBudget += budget.amount
+    })
 
     return (
         <main className={styles.main}>
             <div className={styles.navbarContainer}>
-                <MainNavbar activeItem={'bankaccounts'} />
+                <MainNavbar activeItem={'budget'} />
             </div>
             <div className={styles.header}>
-                <p>Bank Accounts</p>
+                <p>Budgets</p>
+                {totalBudget!=0? <p>Total Budget: R {totalBudget.toFixed(2)}</p>:''}
             </div>
-            <div style={{ width:'fit-content', margin: 'auto', alignItems: 'center', alignSelf:'center', verticalAlign:'middle' }}>
-                <BankAccountModal/>
+            <div style={{ width:'fit-content', margin: 'auto', alignItems: 'center', alignSelf:'center', verticalAlign:'middle', display:'flex', flexDirection:'column' }}>
+                <BudgetModal/>
 
-                <div className={styles.bankAccountsContainer}>
+                <div className={styles.budgetContainer}>
                     <List
-                        className={styles.accountList}
-                        dataSource={budget}
+                        className={styles.budgetList}
+                        dataSource={budgets}
                         renderItem={(item) => (
                             <List.Item>
                                 <Card
-                                    className={styles.accountCard}
-                                    title={item.accountName}
+                                    className={styles.budgetCard}
+                                    title={item.category}
                                     headStyle={{ background: '#99bfa8', width: '250px', borderRadius: '20px 0 0 20px', alignContent: 'center', textAlign: 'center' }}>
                                     <div style={{ display: 'flex', gap: '40px', justifyContent: 'space-evenly', alignContent: 'center' }}>
-                                        <p>Balance: R {item.balance.toFixed(2)}</p>
-                                        <p>Account Type: {item.accountType}</p>
+                                        <p>Amount: R {item.amount.toFixed(2)}</p>
                                         <div style={{ alignSelf: 'center', display: 'flex', gap: '5px' }}>
-                                            <Button onClick={() => { }} style={{ alignSelf: 'center' }}>Edit</Button>
-                                            <Button onClick={() => { }} style={{ alignSelf: 'center' }}>Delete</Button>
+                                            <Button onClick={() => deleteBudget(item.id).then(() => getBudgetsForUser())} style={{ alignSelf: 'center' }}>Delete</Button>
                                         </div>
                                     </div>
                                 </Card>

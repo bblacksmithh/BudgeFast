@@ -1,5 +1,6 @@
 ﻿using Abp.Application.Services;
 using Abp.Domain.Repositories;
+using Abp.Timing;
 using Abp.UI;
 using BudgeFast.Authorization.Users;
 using BudgeFast.Domains;
@@ -186,6 +187,37 @@ namespace BudgeFast.Services.TransactionServices
             }
             return result;
         }
+
+        public async Task<List<IncomeVsExpensesDto>> GetIncomeVsExpenses(long userId)
+        {
+            var result = new List<IncomeVsExpensesDto>();
+            for (int i = 5; i >= 0; i--)
+            {
+                decimal totalIncome = 0;
+                decimal totalExpenses = 0;
+                var transactionsInMonth = _transactionRepository.GetAll()
+                    .Where(x => x.TransactionDate.Month == DateTime.Now.AddMonths(-i).Month && x.TransactionDate.Year == DateTime.Now.AddMonths(-i).Year)
+                    .ToList();
+                foreach (var transaction in transactionsInMonth)
+                {
+                    if (transaction.IsExpense == true)
+                    {
+                        totalExpenses += transaction.Amount;
+                    }
+                    else
+                    {
+                        totalIncome += transaction.Amount;
+                    }
+                }
+                var monthResults = new IncomeVsExpensesDto();
+                monthResults.Income = totalIncome;
+                monthResults.Expenses = totalExpenses;
+                monthResults.Year = DateTime.Now.AddMonths(-i).Year.ToString();
+                monthResults.Month = DateTime.Now.AddMonths(-i).Month.ToString();
+                result.Add(monthResults);
+            }
+            return result;
+        } 
 
         public async Task DeleteTransaction(Guid id)
         {

@@ -2,9 +2,9 @@
 
 import React, { FC, PropsWithChildren, useContext, useReducer, useState } from "react";
 import axios from "axios";
-import { ICreateTransaction, IDeleteTransaction, ITransaction, TRANSACTION_CONTEXT_INITIAL_STATE, TransactionActionContext, TransactionStateContext } from "./context";
+import { ICreateTransaction, IDeleteTransaction, IIncomeVsExpenses, ITransaction, TRANSACTION_CONTEXT_INITIAL_STATE, TransactionActionContext, TransactionStateContext } from "./context";
 import { transactionReducer } from "./reducer";
-import { getAllExpensesForUserAction, getAllIncomeForUserAction, createTransactionAction } from "./actions";
+import { getAllExpensesForUserAction, getAllIncomeForUserAction, createTransactionAction, getIncomeVsExpensesAction } from "./actions";
 
 const TransactionProvider: FC<PropsWithChildren<any>> = ({ children }) => {
     const [state, dispatch] = useReducer(transactionReducer, TRANSACTION_CONTEXT_INITIAL_STATE);
@@ -49,23 +49,23 @@ const TransactionProvider: FC<PropsWithChildren<any>> = ({ children }) => {
                 .then((response) => {
                     // dispatch(createTransactionAction(response.data));
                     axios.get(`https://localhost:44311/api/services/app/Transaction/GetAllExpensesForUser?UserId=${localStorage.getItem('userId')}`)
-                    .then((expenseResult) => {
-                        dispatch(getAllExpensesForUserAction(expenseResult.data.result));
-                        // resolve(expenseResult.data);
-                    })
-                    .catch (e => {
-                        setIsInProgress(false);
-                        reject(e.message);
-                    })
+                        .then((expenseResult) => {
+                            dispatch(getAllExpensesForUserAction(expenseResult.data.result));
+                            // resolve(expenseResult.data);
+                        })
+                        .catch(e => {
+                            setIsInProgress(false);
+                            reject(e.message);
+                        })
                     axios.get(`https://localhost:44311/api/services/app/Transaction/GetAllIncomeForUser?UserId=${localStorage.getItem('userId')}`)
-                    .then((incomeResult) => {
-                        dispatch(getAllIncomeForUserAction(incomeResult.data.result));
-                        // resolve(incomeResult.data);
-                    })
-                    .catch (e => {
-                        setIsInProgress(false);
-                        reject(e.message);
-                    })
+                        .then((incomeResult) => {
+                            dispatch(getAllIncomeForUserAction(incomeResult.data.result));
+                            // resolve(incomeResult.data);
+                        })
+                        .catch(e => {
+                            setIsInProgress(false);
+                            reject(e.message);
+                        })
                     setIsInProgress(false);
                     resolve(response.data);
                 })
@@ -75,36 +75,53 @@ const TransactionProvider: FC<PropsWithChildren<any>> = ({ children }) => {
                 })
         });
 
-    const deleteTransaction = (transactionId: IDeleteTransaction) => 
+    const deleteTransaction = (transactionId: IDeleteTransaction) =>
         new Promise<void>((resolve, reject) => {
             setIsInProgress(true);
             axios.delete(`https://localhost:44311/api/services/app/Transaction/DeleteTransaction?id=${transactionId.id}`)
-            .then(response => {
-                resolve(response.data);
-                axios.get(`https://localhost:44311/api/services/app/Transaction/GetAllExpensesForUser?UserId=${localStorage.getItem('userId')}`)
-                    .then((expenseResult) => {
-                        dispatch(getAllExpensesForUserAction(expenseResult.data.result));
-                        // resolve(expenseResult.data);
-                    })
-                    .catch (e => {
-                        setIsInProgress(false);
-                        reject(e.message);
-                    })
+                .then(response => {
+                    resolve(response.data);
+                    axios.get(`https://localhost:44311/api/services/app/Transaction/GetAllExpensesForUser?UserId=${localStorage.getItem('userId')}`)
+                        .then((expenseResult) => {
+                            dispatch(getAllExpensesForUserAction(expenseResult.data.result));
+                            // resolve(expenseResult.data);
+                        })
+                        .catch(e => {
+                            setIsInProgress(false);
+                            reject(e.message);
+                        })
                     axios.get(`https://localhost:44311/api/services/app/Transaction/GetAllIncomeForUser?UserId=${localStorage.getItem('userId')}`)
-                    .then((incomeResult) => {
-                        dispatch(getAllIncomeForUserAction(incomeResult.data.result));
-                        // resolve(incomeResult.data);
-                    })
-                    .catch (e => {
-                        setIsInProgress(false);
-                        reject(e.message);
-                    })
+                        .then((incomeResult) => {
+                            dispatch(getAllIncomeForUserAction(incomeResult.data.result));
+                            // resolve(incomeResult.data);
+                        })
+                        .catch(e => {
+                            setIsInProgress(false);
+                            reject(e.message);
+                        })
                     setIsInProgress(false);
-            })
-            .catch(e => {
-                reject(e.message);
-                setIsInProgress(false)
-            })
+                })
+                .catch(e => {
+                    reject(e.message);
+                    setIsInProgress(false)
+                })
+        })
+
+    const getIncomeVsExpenses = (): Promise<IIncomeVsExpenses[]> =>
+        new Promise((resolve, reject) => {
+            setIsInProgress(true);
+            axios.get(`https://localhost:44311/api/services/app/Transaction/GetIncomeVsExpenses?UserId=${localStorage.getItem('userId')}`)
+                .then((response) => {
+                    resolve(response.data);
+                    dispatch(getIncomeVsExpensesAction(response.data.result));
+                    setIsInProgress(false);
+                }
+                )
+                .catch(e => {
+                    reject(e.message);
+                    console.log(e.message);
+                    setIsInProgress(false);
+                })
         })
 
     return (
@@ -118,7 +135,8 @@ const TransactionProvider: FC<PropsWithChildren<any>> = ({ children }) => {
                     getAllIncomeForUser,
                     getAllExpensesForUser,
                     createTransaction,
-                    deleteTransaction
+                    deleteTransaction,
+                    getIncomeVsExpenses,
                 }}>
                 {children}
             </TransactionActionContext.Provider>

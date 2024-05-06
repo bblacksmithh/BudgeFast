@@ -1,37 +1,31 @@
 import { createContext } from "react";
 
 export interface IBudget {
-    forUser: string,
-    monthOf: Date,
-    openingBalance: number,
-    netChange: number,
-    closingBalance: number,
-    transactions: [
-        {
-            description: string,
-            amount: number,
-            category: string,
-            accountName: string,
-            isExpense: boolean,
-            transactionDate: Date,
-            id: string,
-        }
-    ],
+    category: string,
+    amount: number,
     id: string,
 }
 
-export interface IStatementStateContext {
-    allStatements?: IStatement[],
+export interface IAddBudget {
+    userId: number,
+    categoryId: string,
+    amount: number,
+}
+
+export interface IBudgetStateContext {
+    budgets?: IBudget[],
     isInProgress?: any,
     error?: any,
     isSuccess?: boolean
 }
 
-export interface IStatementActionContext {
-    getAllStatementsForUser: () => Promise<IStatement[]>
+export interface IBudgetActionContext {
+    getBudgetsForUser: () => Promise<IBudget[]>
+    addBudget: (budget: IAddBudget) => Promise<void>
+    deleteBudget: (budgetId: string) => Promise<void>
 }
 
-export const STATEMENT_CONTEXT_INITIAL_STATE: IStatementStateContext = {};
+export const BUDGET_CONTEXT_INITIAL_STATE: IBudgetStateContext = {};
 
-export const StatementStateContext = createContext<IStatementStateContext>(STATEMENT_CONTEXT_INITIAL_STATE);
-export const StatementActionContext = createContext<IStatementActionContext>({} as any);
+export const BudgetStateContext = createContext<IBudgetStateContext>(BUDGET_CONTEXT_INITIAL_STATE);
+export const BudgetActionContext = createContext<IBudgetActionContext>({} as any);

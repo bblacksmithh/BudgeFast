@@ -2,21 +2,20 @@
 
 import React, { FC, PropsWithChildren, useContext, useReducer, useState } from "react";
 import axios from "axios";
-import { statementReducer } from "./reducer";
-import { getAllStatementsForUserAction } from "./actions";
-import { IStatement, STATEMENT_CONTEXT_INITIAL_STATE, StatementActionContext, StatementStateContext } from "./context";
+import { budgetReducer } from "./reducer";
+import { getAllBudgetsForUserAction } from "./actions";
+import { IBudget, BUDGET_CONTEXT_INITIAL_STATE, BudgetStateContext, BudgetActionContext, IAddBudget } from "./context";
 
-const StatementProvider: FC<PropsWithChildren<any>> = ({ children }) => {
-    const [state, dispatch] = useReducer(statementReducer, STATEMENT_CONTEXT_INITIAL_STATE);
+const BudgetProvider: FC<PropsWithChildren<any>> = ({ children }) => {
+    const [state, dispatch] = useReducer(budgetReducer, BUDGET_CONTEXT_INITIAL_STATE);
     const [isInProgress, setIsInProgress] = useState(false);
 
-    const getAllStatementsForUser = (): Promise<IStatement[]> =>
+    const getBudgetsForUser = (): Promise<IBudget[]> =>
         new Promise((resolve, reject) => {
             {
-                axios.get(`https://localhost:44311/api/services/app/Statement/GetAllStatementsForUser?userId=${localStorage.getItem('userId')}`)
+                axios.get(`https://localhost:44311/api/services/app/Budget/GetBudgetsForUser?userId=${localStorage.getItem('userId')}`)
                     .then((response) => {
-                        console.log(response.data.result)
-                        dispatch(getAllStatementsForUserAction(response.data.result));
+                        dispatch(getAllBudgetsForUserAction(response.data.result));
                         setIsInProgress(false);
                         resolve(response.data);
                     })
@@ -27,25 +26,55 @@ const StatementProvider: FC<PropsWithChildren<any>> = ({ children }) => {
             }
         });
 
+        const addBudget = (budget: IAddBudget) => 
+            new Promise<void>((resolve, reject) => {
+                setIsInProgress(true);
+                axios.post('https://localhost:44311/api/services/app/Budget/AddBudget', budget)
+                .then(response => {
+                    resolve(response.data);
+                    setIsInProgress(false);
+                })
+                .catch(e => {
+                    console.log(e.message);
+                    reject(e.message);
+                    setIsInProgress(false);
+                })
+            })
+
+        const deleteBudget = (id: string) => 
+            new Promise<void>((resolve, reject) => {
+                setIsInProgress(true);
+                axios.delete(`https://localhost:44311/api/services/app/Budget/DeleteBudgetForUser?budgetId=${id}`)
+                .then(response => {
+                    resolve(response.data);
+                    setIsInProgress(false);
+                })
+                .catch(e => {
+                    reject(e.message);
+                    setIsInProgress(false)
+                })
+            })
 
     return (
-        <StatementStateContext.Provider
+        <BudgetStateContext.Provider
             value={{
                 ...state,
                 isInProgress,
             }}>
-            <StatementActionContext.Provider
+            <BudgetActionContext.Provider
                 value={{
-                    getAllStatementsForUser,
+                    getBudgetsForUser,
+                    addBudget,
+                    deleteBudget
                 }}>
                 {children}
-            </StatementActionContext.Provider>
-        </StatementStateContext.Provider>
+            </BudgetActionContext.Provider>
+        </BudgetStateContext.Provider>
     );
 }
 
 const useStateContext = () => {
-    const context = useContext(StatementStateContext);
+    const context = useContext(BudgetStateContext);
 
     if (context == undefined) {
         throw new Error('useTransactionState must be used within a TransactionProvider');
@@ -54,7 +83,7 @@ const useStateContext = () => {
 }
 
 const useActionsContext = () => {
-    const context = useContext(StatementActionContext);
+    const context = useContext(BudgetActionContext);
 
     if (context == undefined) {
         throw new Error('useTransactionActions must be used within a TransactionProvider');
@@ -66,4 +95,4 @@ const useTransaction = () => {
     return { ...useStateContext(), ...useActionsContext() };
 };
 
-export { useTransaction, StatementProvider };
+export { useTransaction, BudgetProvider };

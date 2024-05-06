@@ -5,7 +5,7 @@ export function categoryReducer(state: ICategoryStateContext, action: ReduxActio
     const { type, payload } = action;
 
     switch (type) {
-        case CategoryActions.GET_ALL_EXPENSE_CATEGORIES:
+        case CategoryActions.GET_ALL_EXPENSES_PER_CATEGORY:
             return {
                 ...state,
                 ...payload
@@ -14,6 +14,11 @@ export function categoryReducer(state: ICategoryStateContext, action: ReduxActio
             return {
                 ...state,
                 ...payload
+            }
+        case CategoryActions.GET_ALL_EXPENSE_CATEGORIES:
+            return {
+                ...state,
+                ...payload,
             }
         default:
             return state;

@@ -1,5 +1,6 @@
 import { UserAuthProvider } from "@/providers/authprovider";
 import { BankAccountProvider } from "@/providers/bankaccount";
+import { BudgetProvider } from "@/providers/budget";
 import { CategoryProvider } from "@/providers/category";
 import { StatementProvider } from "@/providers/statement";
 import { TransactionProvider } from "@/providers/transactions";
@@ -24,9 +25,11 @@ export default function RootLayout({
         <CategoryProvider>
           <TransactionProvider>
             <StatementProvider>
-              <html lang="en">
-                <body className={inter.className}>{children}</body>
-              </html>
+              <BudgetProvider>
+                <html lang="en">
+                  <body className={inter.className}>{children}</body>
+                </html>
+              </BudgetProvider>
             </StatementProvider>
           </TransactionProvider>
         </CategoryProvider>

@@ -6,9 +6,15 @@ export interface ICategory {
     id: string,
 }
 
+export interface IExpensesPerCategory {
+    categoryName: string,
+    amountSpent: number,
+}
+
 export interface ICategoryStateContext {
     allIncomeCategories?: ICategory[],
     allExpenseCategories?: ICategory[],
+    expensesPerCategory?: IExpensesPerCategory[],
     isInProgress?: any,
     error?: any,
 }
@@ -16,6 +22,7 @@ export interface ICategoryStateContext {
 export interface ICategoryActionContext {
     getAllExpenseCategories: () => Promise<ICategory[]>,
     getAllIncomeCategories: () => Promise<ICategory[]>,
+    getAllExpensesPerCategory: () => Promise<IExpensesPerCategory[]>
 }
 
 export const CATEGORY_CONTEXT_INITIAL_STATE: ICategoryStateContext = {};
