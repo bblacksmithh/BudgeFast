@@ -47,7 +47,6 @@ const BudgetDash = () => {
                 budgetedAmounts.push(budgetAndSpending.amount);
                 const expense = expensesPerCategory.find(expense => expense.categoryName === budgetAndSpending.category);
                 actualAmounts.push(expense ? expense.amountSpent : 0);
-                console.log(chartLabels);
             });
 
             setChartData({

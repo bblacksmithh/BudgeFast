@@ -60,7 +60,6 @@ const Forecast = () => {
     };
 
 
-    console.log('forecast', entireForecast)
     return (
         <>
             <Line style={{width:'100%'}} data={data} options={options} />

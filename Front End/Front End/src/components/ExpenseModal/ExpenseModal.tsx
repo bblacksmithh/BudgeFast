@@ -38,7 +38,6 @@ const ExpenseModal = () => {
 
     const onFinish = (values: any) => {
         const input: ICreateTransaction = { userId: userId, bankAccountId: values.account, transactionCategoryId: values.category, amount: values.amount, description: values.description, transactionDate: values.date, isExpense: true }
-        console.log('values', values);
         createTransaction(input).then(() => {
             handleOk();
         });

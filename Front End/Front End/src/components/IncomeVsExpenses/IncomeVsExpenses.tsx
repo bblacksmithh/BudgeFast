@@ -21,7 +21,6 @@ const IncomeVsExpenses = () => {
     useEffect(() => {
         if (sixMonthIncomeVsExpenses) {
 
-            console.log('state', sixMonthIncomeVsExpenses);
             const labels = sixMonthIncomeVsExpenses.map(entry => `${entry.month}/${entry.year}`);
             const incomeData = sixMonthIncomeVsExpenses.map(entry => entry.income);
             const expensesData = sixMonthIncomeVsExpenses.map(entry => entry.expenses);

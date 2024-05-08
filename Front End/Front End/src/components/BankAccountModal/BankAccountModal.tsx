@@ -29,7 +29,6 @@ const BankAccountModal = () => {
 
     const onFinish = (values: any) => {
         const input: ICreateBankAccount = { userId: userId, accountName: values.name, accountType: values.type, balance: values.balance }
-        console.log('values', values);
         createBankAccount(input).then(() => {
             getAllBankAccountsForUser()
             handleOk();

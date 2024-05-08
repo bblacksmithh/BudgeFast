@@ -46,7 +46,7 @@ const LoginContent = () => {
                                 </Form.Item>
                                 <Button htmlType='submit' className={styles.button2}>Log in</Button>
                             </Form>
-                            <p>Don't have an account yet? <a style={{ textDecoration: 'none' }} href="/register">Create an account</a></p>
+                            <p>Dont have an account yet? <a style={{ textDecoration: 'none' }} href="/register">Create an account</a></p>
                         </div>
                     </div>
                 </div>

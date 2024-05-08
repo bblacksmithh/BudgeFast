@@ -45,7 +45,6 @@ const MainNavbar = ({activeItem} :{activeItem: any}) => {
     const router = useRouter();
 
     const onClick: MenuProps['onClick'] = (e) => {
-        console.log('click ', e);
         setCurrent(e.key);
         router.push("/"+e.key)
     };

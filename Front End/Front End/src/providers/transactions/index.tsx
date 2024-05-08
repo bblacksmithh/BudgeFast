@@ -15,7 +15,6 @@ const TransactionProvider: FC<PropsWithChildren<any>> = ({ children }) => {
             {
                 axios.get(`https://localhost:44311/api/services/app/Transaction/GetAllIncomeForUser?UserId=${localStorage.getItem('userId')}`)
                     .then((response) => {
-                        console.log(response.data.result)
                         dispatch(getAllIncomeForUserAction(response.data.result));
                         setIsInProgress(false);
                         resolve(response.data);

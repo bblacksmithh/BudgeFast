@@ -15,7 +15,6 @@ const CategoryProvider: FC<PropsWithChildren<any>> = ({ children }) => {
             {
                 axios.get('https://localhost:44311/api/services/app/TransactionCategory/GetAllIncomeCategories')
                     .then((response) => {
-                        console.log(response.data.result)
                         dispatch(getAllIncomeCategoriesAction(response.data.result));
                         setIsInProgress(false);
                         resolve(response.data);
@@ -32,7 +31,6 @@ const CategoryProvider: FC<PropsWithChildren<any>> = ({ children }) => {
             {
                 axios.get('https://localhost:44311/api/services/app/TransactionCategory/GetAllExpenseCategories')
                     .then((response) => {
-                        console.log(response.data.result)
                         dispatch(getAllExpenseCategoriesAction(response.data.result));
                         setIsInProgress(false);
                         resolve(response.data);
@@ -52,7 +50,6 @@ const CategoryProvider: FC<PropsWithChildren<any>> = ({ children }) => {
             {
                 axios.get(`https://localhost:44311/api/services/app/TransactionCategory/GetTotalExpensesPerCategoryPerMonth?UserId=${localStorage.getItem('userId')}&MonthOf=${year + "-" + month}`)
                     .then((response) => {
-                        console.log('resp',response.data.result)
                         dispatch(getAllExpensesPerCategoryAction(response.data.result));
                         setIsInProgress(false);
                         resolve(response.data);

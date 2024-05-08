@@ -33,11 +33,9 @@ const UserAuthProvider: FC<PropsWithChildren<any>> = ({ children }) => {
 
     const create = (userInput: IUserCreate): Promise<IUserAuthResponse> =>
         new Promise((resolve, reject) => {
-            console.log('userinput', userInput)
             setIsInProgress(true);
             axios.post('https://localhost:44311/api/services/app/User/Create', userInput)
             .then((response) => {
-                console.log('resp',response);
                 
                 setErrorCreate('');
                 setIsInProgress(false);

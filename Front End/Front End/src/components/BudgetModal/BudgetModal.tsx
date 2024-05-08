@@ -37,7 +37,6 @@ const BudgetModal = () => {
 
     const onFinish = (values: any) => {
         const input: IAddBudget = { userId: userId, categoryId: values.category, amount: values.amount }
-        console.log('values', values);
         addBudget(input).then(() => {
             getBudgetsForUser()
             handleOk();
