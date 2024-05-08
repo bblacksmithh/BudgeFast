@@ -99,7 +99,6 @@ const StatementModal = ({ statement, visible, onClose }: { statement: any, visib
             <div style={{display:'flex', justifyContent:'end'}}>
                 <Button style={{margin:'10px 0'}} onClick={printDocument}>Print Statement</Button>
                 <Button style={{margin:'10px 0'}} onClick={saveDocument}>Download PDF</Button>
-                <Button style={{margin:'10px 0'}} onClick={printDocument}>Send via Email</Button>
             </div>
         </Modal >
     );
