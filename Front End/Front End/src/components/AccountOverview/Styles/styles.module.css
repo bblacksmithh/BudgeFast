@@ -9,6 +9,14 @@
     text-align: center;
     gap: 100px;
 }
+@media screen and (max-width: 1332px) {
+    .main {
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 50px; /* Adjust padding as needed */
+        gap: 50px; /* Adjust gap as needed */
+    }
+}
 
 .netWorth {
     width: 300px;

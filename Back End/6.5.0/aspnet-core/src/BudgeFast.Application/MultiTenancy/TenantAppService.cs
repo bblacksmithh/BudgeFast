@@ -91,12 +91,12 @@ namespace BudgeFast.MultiTenancy
             return MapToEntityDto(tenant);
         }
 
-        protected override IQueryable<Tenant> CreateFilteredQuery(PagedTenantResultRequestDto input)
-        {
-            return Repository.GetAll()
-                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => x.TenancyName.Contains(input.Keyword) || x.Name.Contains(input.Keyword))
-                .WhereIf(input.IsActive.HasValue, x => x.IsActive == input.IsActive);
-        }
+        //protected override IQueryable<Tenant> CreateFilteredQuery(PagedTenantResultRequestDto input)
+        //{
+        //    //return Repository.GetAll()
+        //    //    .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => x.TenancyName.Contains(input.Keyword) || x.Name.Contains(input.Keyword))
+        //    //    .WhereIf(input.IsActive.HasValue, x => x.IsActive == input.IsActive);
+        //}
 
         protected override void MapToEntity(TenantDto updateInput, Tenant entity)
         {

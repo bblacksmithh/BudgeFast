@@ -62,7 +62,10 @@ const MainNavbar = ({activeItem} :{activeItem: any}) => {
                 <Menu className={styles.menu} onClick={onClick} selectedKeys={[current]} items={items} mode='horizontal' />
             </div>
             <div className={styles.accountActionsContainer}>
-                <div className={styles.accountActions}>
+                <div onClick={() =>
+                {
+                    router.push('/');
+                }} className={styles.accountActions}>
                     <LogoutOutlined />
                     <a>Log Out</a>
                 </div>

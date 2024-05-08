@@ -20,6 +20,11 @@ export function budgetReducer(state: IBudgetStateContext, action: ReduxActions.A
                 ...state,
                 ...payload,
             }
+        case BudgetActions.GET_ALL_BUDGETS_AND_EXPENDITURE_FOR_USER:
+            return {
+                ...state,
+                ...payload,
+            }
         default: 
             return state;
     }

@@ -14,6 +14,7 @@ export interface IAddBudget {
 
 export interface IBudgetStateContext {
     budgets?: IBudget[],
+    budgetsAndSpending?: IBudget[],
     isInProgress?: any,
     error?: any,
     isSuccess?: boolean
@@ -21,6 +22,7 @@ export interface IBudgetStateContext {
 
 export interface IBudgetActionContext {
     getBudgetsForUser: () => Promise<IBudget[]>
+    getBudgetsAndSpendingForUser: () => Promise<IBudget[]>
     addBudget: (budget: IAddBudget) => Promise<void>
     deleteBudget: (budgetId: string) => Promise<void>
 }

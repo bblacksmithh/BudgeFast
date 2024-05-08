@@ -20,7 +20,14 @@ export interface IStatement {
     id: string,
 }
 
+export interface IForecast {
+    forecastedValue: number,
+    label: string,
+    date: Date,
+}
+
 export interface IStatementStateContext {
+    entireForecast?: IForecast[],
     allStatements?: IStatement[],
     isInProgress?: any,
     error?: any,
@@ -29,6 +36,7 @@ export interface IStatementStateContext {
 
 export interface IStatementActionContext {
     getAllStatementsForUser: () => Promise<IStatement[]>
+    forecastNetWorth: () => Promise<IForecast[]>
 }
 
 export const STATEMENT_CONTEXT_INITIAL_STATE: IStatementStateContext = {};

@@ -9,6 +9,7 @@ import { CategoryActionContext, CategoryStateContext } from '@/providers/categor
 import BudgetDash from '@/components/BudgetDash/BudgetDash';
 import AccountOverview from '@/components/AccountOverview/AccountOverview';
 import IncomeVsExpenses from '@/components/IncomeVsExpenses/IncomeVsExpenses';
+import Forecast from '@/components/Forecast/Forecast';
 
 
 const Dashboard = () => {
@@ -29,6 +30,10 @@ const Dashboard = () => {
       <div className={styles.incomeVsExpense}>
         <p style={{width:"100%", textAlign:'center', fontSize:20}}>Income vs Expenses</p>
         <IncomeVsExpenses/>
+      </div>
+      <div className={styles.forecast}>
+        <p style={{width:"100%", textAlign:'center', fontSize:20}}>Forecast (NET worth)</p>
+        <Forecast/>
       </div>
     </main>
   );

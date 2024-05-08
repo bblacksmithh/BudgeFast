@@ -10,6 +10,11 @@ export function statementReducer(state: IStatementStateContext, action: ReduxAct
                 ...state,
                 ...payload
             }
+        case StatementActions.FORECAST_NET_WORTH:
+            return {
+                ...state,
+                ...payload
+            }
         default: 
             return state;
     }

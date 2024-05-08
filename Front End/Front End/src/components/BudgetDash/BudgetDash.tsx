@@ -11,8 +11,8 @@ import { Bar } from 'react-chartjs-2';
 const BudgetDash = () => {
 
     const { getAllExpensesPerCategory } = useContext(CategoryActionContext);
-    const { getBudgetsForUser } = useContext(BudgetActionContext);
-    const { budgets } = useContext(BudgetStateContext);
+    const { getBudgetsAndSpendingForUser } = useContext(BudgetActionContext);
+    const { budgetsAndSpending } = useContext(BudgetStateContext);
     const { expensesPerCategory } = useContext(CategoryStateContext);
 
     const [chartData, setChartData] = useState<ChartData<"bar", any, any> | null>(null);
@@ -22,18 +22,18 @@ const BudgetDash = () => {
     Chart.register(CategoryScale);
 
     useEffect(() => {
-        getBudgetsForUser();
+        getBudgetsAndSpendingForUser();
         getAllExpensesPerCategory();
     }, []);
 
     useEffect(() => {
-        if (budgets && expensesPerCategory) {
+        if (budgetsAndSpending && expensesPerCategory) {
             const chartLabels: any = [];
             const budgetedAmounts: any = [];
             const actualAmounts: any = [];
 
             // Calculate total budgeted amount
-            const totalBudget = budgets.reduce((total, budget) => total + budget.amount, 0);
+            const totalBudget = budgetsAndSpending.reduce((total, budget) => total + budget.amount, 0);
             setTotalBudgetedAmount(totalBudget);
 
             // Calculate total amount spent
@@ -42,10 +42,10 @@ const BudgetDash = () => {
 
 
             // Chart data
-            budgets.forEach(budget => {
-                chartLabels.push(budget.category);
-                budgetedAmounts.push(budget.amount);
-                const expense = expensesPerCategory.find(expense => expense.categoryName === budget.category);
+            budgetsAndSpending.forEach(budgetAndSpending => {
+                chartLabels.push(budgetAndSpending.category);
+                budgetedAmounts.push(budgetAndSpending.amount);
+                const expense = expensesPerCategory.find(expense => expense.categoryName === budgetAndSpending.category);
                 actualAmounts.push(expense ? expense.amountSpent : 0);
                 console.log(chartLabels);
             });
@@ -70,7 +70,7 @@ const BudgetDash = () => {
                 ]
             });
         }
-    }, [budgets, expensesPerCategory]);
+    }, [budgetsAndSpending, expensesPerCategory]);
     return (
         <>
             <div style={{paddingLeft:30}}>Total Spent: R {totalAmountSpent.toFixed(2)}</div>

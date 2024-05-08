@@ -3,8 +3,8 @@
 import React, { FC, PropsWithChildren, useContext, useReducer, useState } from "react";
 import axios from "axios";
 import { statementReducer } from "./reducer";
-import { getAllStatementsForUserAction } from "./actions";
-import { IStatement, STATEMENT_CONTEXT_INITIAL_STATE, StatementActionContext, StatementStateContext } from "./context";
+import { forecastNetWorthAction, getAllStatementsForUserAction } from "./actions";
+import { IForecast, IStatement, STATEMENT_CONTEXT_INITIAL_STATE, StatementActionContext, StatementStateContext } from "./context";
 
 const StatementProvider: FC<PropsWithChildren<any>> = ({ children }) => {
     const [state, dispatch] = useReducer(statementReducer, STATEMENT_CONTEXT_INITIAL_STATE);
@@ -12,21 +12,36 @@ const StatementProvider: FC<PropsWithChildren<any>> = ({ children }) => {
 
     const getAllStatementsForUser = (): Promise<IStatement[]> =>
         new Promise((resolve, reject) => {
-            {
-                axios.get(`https://localhost:44311/api/services/app/Statement/GetAllStatementsForUser?userId=${localStorage.getItem('userId')}`)
-                    .then((response) => {
-                        console.log(response.data.result)
-                        dispatch(getAllStatementsForUserAction(response.data.result));
-                        setIsInProgress(false);
-                        resolve(response.data);
-                    })
-                    .catch(e => {
-                        setIsInProgress(false);
-                        reject(e.message);
-                    })
-            }
+
+            axios.get(`https://localhost:44311/api/services/app/Statement/GetAllStatementsForUser?userId=${localStorage.getItem('userId')}`)
+                .then((response) => {
+                    console.log(response.data.result)
+                    dispatch(getAllStatementsForUserAction(response.data.result));
+                    setIsInProgress(false);
+                    resolve(response.data);
+                })
+                .catch(e => {
+                    setIsInProgress(false);
+                    reject(e.message);
+                })
+
         });
 
+    const forecastNetWorth = (): Promise<IForecast[]> =>
+        new Promise((resolve, reject) => {
+            axios.post(`https://localhost:44311/api/services/app/Statement/ForecastNetWorth?userId=${localStorage.getItem('userId')}`)
+                .then((response) => {
+                    console.log(response.data.result)
+                    dispatch(forecastNetWorthAction(response.data.result));
+                    setIsInProgress(false);
+                    resolve(response.data);
+                })
+                .catch(e => {
+                    setIsInProgress(false);
+                    reject(e.message);
+                })
+
+        });
 
     return (
         <StatementStateContext.Provider
@@ -37,6 +52,7 @@ const StatementProvider: FC<PropsWithChildren<any>> = ({ children }) => {
             <StatementActionContext.Provider
                 value={{
                     getAllStatementsForUser,
+                    forecastNetWorth
                 }}>
                 {children}
             </StatementActionContext.Provider>

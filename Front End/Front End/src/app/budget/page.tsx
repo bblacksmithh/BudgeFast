@@ -29,7 +29,12 @@ const Budget = () => {
             </div>
             <div className={styles.header}>
                 <p>Budgets</p>
-                {totalBudget!=0? <p>Total Budget: R {totalBudget.toFixed(2)}</p>:''}
+                {totalBudget!=0?<Card title='Total Budget'
+                                        style={{margin:'auto', marginBottom:'20px'}}
+                                        className={styles.budgetCard}
+                                        headStyle={{ background: '#99bfa8', width: '150px', borderRadius: '20px 0 0 20px', alignContent: 'center', textAlign: 'center' }}>
+                                    <span>R {totalBudget.toFixed(2)}</span>
+                                </Card>:''}
             </div>
             <div style={{ width:'fit-content', margin: 'auto', alignItems: 'center', alignSelf:'center', verticalAlign:'middle', display:'flex', flexDirection:'column' }}>
                 <BudgetModal/>
@@ -38,6 +43,7 @@ const Budget = () => {
                     <List
                         className={styles.budgetList}
                         dataSource={budgets}
+                        grid={{column:2, gutter:16}}
                         renderItem={(item) => (
                             <List.Item>
                                 <Card
@@ -45,7 +51,7 @@ const Budget = () => {
                                     title={item.category}
                                     headStyle={{ background: '#99bfa8', width: '250px', borderRadius: '20px 0 0 20px', alignContent: 'center', textAlign: 'center' }}>
                                     <div style={{ display: 'flex', gap: '40px', justifyContent: 'space-evenly', alignContent: 'center' }}>
-                                        <p>Amount: R {item.amount.toFixed(2)}</p>
+                                        <p>R {item.amount.toFixed(2)}</p>
                                         <div style={{ alignSelf: 'center', display: 'flex', gap: '5px' }}>
                                             <Button onClick={() => deleteBudget(item.id).then(() => getBudgetsForUser())} style={{ alignSelf: 'center' }}>Delete</Button>
                                         </div>

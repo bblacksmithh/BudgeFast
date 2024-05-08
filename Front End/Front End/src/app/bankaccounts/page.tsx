@@ -39,7 +39,6 @@ const BankAccounts = () => {
                                         <p>Balance: R {item.balance.toFixed(2)}</p>
                                         <p>Account Type: {item.accountType}</p>
                                         <div style={{ alignSelf: 'center', display: 'flex', gap: '5px' }}>
-                                            <Button onClick={() => { }} style={{ alignSelf: 'center' }}>Edit</Button>
                                             <Button onClick={() => { }} style={{ alignSelf: 'center' }}>Delete</Button>
                                         </div>
                                     </div>

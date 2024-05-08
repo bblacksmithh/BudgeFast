@@ -195,8 +195,8 @@ namespace BudgeFast.Services.TransactionServices
             {
                 decimal totalIncome = 0;
                 decimal totalExpenses = 0;
-                var transactionsInMonth = _transactionRepository.GetAll()
-                    .Where(x => x.TransactionDate.Month == DateTime.Now.AddMonths(-i).Month && x.TransactionDate.Year == DateTime.Now.AddMonths(-i).Year)
+                var transactionsInMonth = _transactionRepository.GetAllIncluding(x => x.User)
+                    .Where(x => x.TransactionDate.Month == DateTime.Now.AddMonths(-i).Month && x.TransactionDate.Year == DateTime.Now.AddMonths(-i).Year && x.User.Id == userId)
                     .ToList();
                 foreach (var transaction in transactionsInMonth)
                 {

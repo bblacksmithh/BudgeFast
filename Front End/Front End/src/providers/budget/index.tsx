@@ -3,7 +3,7 @@
 import React, { FC, PropsWithChildren, useContext, useReducer, useState } from "react";
 import axios from "axios";
 import { budgetReducer } from "./reducer";
-import { getAllBudgetsForUserAction } from "./actions";
+import { getAllBudgetsAndSpendingForUserAction, getAllBudgetsForUserAction } from "./actions";
 import { IBudget, BUDGET_CONTEXT_INITIAL_STATE, BudgetStateContext, BudgetActionContext, IAddBudget } from "./context";
 
 const BudgetProvider: FC<PropsWithChildren<any>> = ({ children }) => {
@@ -25,6 +25,22 @@ const BudgetProvider: FC<PropsWithChildren<any>> = ({ children }) => {
                     })
             }
         });
+
+        const getBudgetsAndSpendingForUser = (): Promise<IBudget[]> =>
+            new Promise((resolve, reject) => {
+                {
+                    axios.get(`https://localhost:44311/api/services/app/Budget/GetBudgetsAndSpendingForUser?userId=${localStorage.getItem('userId')}`)
+                        .then((response) => {
+                            dispatch(getAllBudgetsAndSpendingForUserAction(response.data.result));
+                            setIsInProgress(false);
+                            resolve(response.data);
+                        })
+                        .catch(e => {
+                            setIsInProgress(false);
+                            reject(e.message);
+                        })
+                }
+            });
 
         const addBudget = (budget: IAddBudget) => 
             new Promise<void>((resolve, reject) => {
@@ -65,7 +81,8 @@ const BudgetProvider: FC<PropsWithChildren<any>> = ({ children }) => {
                 value={{
                     getBudgetsForUser,
                     addBudget,
-                    deleteBudget
+                    deleteBudget,
+                    getBudgetsAndSpendingForUser,
                 }}>
                 {children}
             </BudgetActionContext.Provider>

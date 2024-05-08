@@ -20,7 +20,6 @@ const LoginContent = () => {
                 router.push('/dashboard');
             })
     }
-    if (localStorage.getItem('userId') && localStorage.getItem('token')) {
         return (
 
             <main className={styles.main}>
@@ -52,10 +51,7 @@ const LoginContent = () => {
                     </div>
                 </div>
             </main>
-        )
-    }
-    else router.push('/login');
-    
+        )    
 }
 
 export default LoginContent

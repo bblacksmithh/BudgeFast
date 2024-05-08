@@ -51,7 +51,7 @@ const ExpenseModal = () => {
                 Log Expense
             </Button>
             <Modal
-                title="Log Income"
+                title="Log Expense"
                 open={isModalOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
