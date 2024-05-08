@@ -1,0 +1,73 @@
+.nav {
+    background-color: red;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 30px;
+    padding-right: 30px;
+    background-color: #99bfa8;
+}
+
+.nav .companyInfo {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 25%;
+}
+
+.nav h1 {
+    font-size: 30px;
+}
+
+.nav img {
+    width: 80px;
+    height: 40px;
+}
+
+.nav .links {
+    width: 50%;
+    align-items: center;
+}
+
+.nav .links .menu {
+    background-color: transparent;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.nav .links .menu span{
+    color: black;
+}
+
+.nav .links .menu svg{
+    color: black;
+    font-size: larger;
+    text-align: center;
+    margin: auto;
+    transform: translateY(1px);
+}
+
+.nav .accountActionsContainer {
+    width: 25%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.nav .accountActions {
+    width: 30%;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+.nav .accountActions svg{
+    font-size: 25px;
+    
+}

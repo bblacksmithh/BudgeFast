@@ -1,3 +1,9 @@
+import { UserAuthProvider } from "@/providers/authprovider";
+import { BankAccountProvider } from "@/providers/bankaccount";
+import { BudgetProvider } from "@/providers/budget";
+import { CategoryProvider } from "@/providers/category";
+import { StatementProvider } from "@/providers/statement";
+import { TransactionProvider } from "@/providers/transactions";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
@@ -14,8 +20,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-    </html>
+    <UserAuthProvider>
+      <BankAccountProvider>
+        <CategoryProvider>
+          <TransactionProvider>
+            <StatementProvider>
+              <BudgetProvider>
+                <html lang="en">
+                  <body className={inter.className}>{children}</body>
+                </html>
+              </BudgetProvider>
+            </StatementProvider>
+          </TransactionProvider>
+        </CategoryProvider>
+      </BankAccountProvider>
+    </UserAuthProvider>
   );
 }

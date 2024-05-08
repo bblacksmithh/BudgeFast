@@ -1583,51 +1583,8 @@ namespace BudgeFast.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("BudgetName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Budgets");
-                });
-
-            modelBuilder.Entity("BudgeFast.Domains.BudgetCategory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<decimal>("BudgetAmount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid?>("BudgetId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
@@ -1653,13 +1610,16 @@ namespace BudgeFast.Migrations
                     b.Property<Guid?>("TransactionCategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.Property<long?>("UserId")
+                        .HasColumnType("bigint");
 
-                    b.HasIndex("BudgetId");
+                    b.HasKey("Id");
 
                     b.HasIndex("TransactionCategoryId");
 
-                    b.ToTable("BudgetCategories");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Budget");
                 });
 
             modelBuilder.Entity("BudgeFast.Domains.Liability", b =>
@@ -2203,26 +2163,17 @@ namespace BudgeFast.Migrations
 
             modelBuilder.Entity("BudgeFast.Domains.Budget", b =>
                 {
-                    b.HasOne("BudgeFast.Authorization.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BudgeFast.Domains.BudgetCategory", b =>
-                {
-                    b.HasOne("BudgeFast.Domains.Budget", "Budget")
-                        .WithMany()
-                        .HasForeignKey("BudgetId");
-
                     b.HasOne("BudgeFast.Domains.TransactionCategory", "TransactionCategory")
                         .WithMany()
                         .HasForeignKey("TransactionCategoryId");
 
-                    b.Navigation("Budget");
+                    b.HasOne("BudgeFast.Authorization.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("TransactionCategory");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BudgeFast.Domains.Liability", b =>

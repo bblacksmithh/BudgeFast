@@ -1,5 +1,6 @@
 ﻿using Abp.Application.Services;
 using Abp.Domain.Repositories;
+using Abp.Timing;
 using Abp.UI;
 using BudgeFast.Authorization.Users;
 using BudgeFast.Domains;
@@ -81,10 +82,11 @@ namespace BudgeFast.Services.TransactionServices
                 }
                 else { statement.NetChange += transaction.Amount;}
                 statement.EndingBalance += statement.NetChange;
-                transaction.StatementId = statement.Id;
-
                 await _statementRepository.InsertAsync(statement);
                 await CurrentUnitOfWork.SaveChangesAsync();
+                statement = _statementRepository.GetAllIncluding(x => x.User).Where(x => x.MonthOf.Year == transaction.TransactionDate.Year && x.MonthOf.Month == transaction.TransactionDate.Month && x.User.Id == transaction.User.Id).FirstOrDefault();
+                transaction.StatementId = statement.Id;
+
             }
 
             if (transaction.IsExpense)
@@ -112,14 +114,14 @@ namespace BudgeFast.Services.TransactionServices
 
         public async Task<List<OutputTransactionDto>> GetAllExpensesForUser(long UserId)
         {
-            var expenses = _transactionRepository.GetAllIncluding(x => x.User, x => x.BankAccount, x => x.TransactionCategory).Where(x => x.User.Id == UserId && x.IsExpense == true).ToList();
+            var expenses = _transactionRepository.GetAllIncluding(x => x.User, x => x.BankAccount, x => x.TransactionCategory).Where(x => x.User.Id == UserId && x.IsExpense == true).OrderByDescending(x => x.TransactionDate).ToList();
             var result = new List<OutputTransactionDto>();
             foreach (var expense in expenses)
             {
                 result.Add(new OutputTransactionDto
                 {
                     Id = expense.Id,
-                    BankAccountId = expense.BankAccount.Id,
+                    AccountName = expense.BankAccount.AccountName,
                     TransactionCategory = expense.TransactionCategory.CategoryName,
                     Amount = expense.Amount,
                     Description = expense.Description,
@@ -138,7 +140,7 @@ namespace BudgeFast.Services.TransactionServices
                 result.Add(new OutputTransactionDto
                 {
                     Id = expense.Id,
-                    BankAccountId = expense.BankAccount.Id,
+                    AccountName = expense.BankAccount.AccountName,
                     TransactionCategory = expense.TransactionCategory.CategoryName,
                     Amount = expense.Amount,
                     Description = expense.Description,
@@ -150,14 +152,14 @@ namespace BudgeFast.Services.TransactionServices
 
         public async Task<List<OutputTransactionDto>> GetAllIncomeForUser(long UserId)
         {
-            var expenses = _transactionRepository.GetAllIncluding(x => x.User, x => x.BankAccount, x => x.TransactionCategory).Where(x => x.User.Id == UserId && x.IsExpense == false).ToList();
+            var expenses = _transactionRepository.GetAllIncluding(x => x.User, x => x.BankAccount, x => x.TransactionCategory).Where(x => x.User.Id == UserId && x.IsExpense == false).OrderByDescending(x => x.TransactionDate).ToList();
             var result = new List<OutputTransactionDto>();
             foreach (var expense in expenses)
             {
                 result.Add(new OutputTransactionDto
                 {
                     Id = expense.Id,
-                    BankAccountId = expense.BankAccount.Id,
+                    AccountName = expense.BankAccount.AccountName,
                     TransactionCategory = expense.TransactionCategory.CategoryName,
                     Amount = expense.Amount,
                     Description = expense.Description,
@@ -176,7 +178,7 @@ namespace BudgeFast.Services.TransactionServices
                 result.Add(new OutputTransactionDto
                 {
                     Id = expense.Id,
-                    BankAccountId = expense.BankAccount.Id,
+                    AccountName = expense.BankAccount.AccountName,
                     TransactionCategory = expense.TransactionCategory.CategoryName,
                     Amount = expense.Amount,
                     Description = expense.Description,
@@ -186,28 +188,79 @@ namespace BudgeFast.Services.TransactionServices
             return result;
         }
 
+        public async Task<List<IncomeVsExpensesDto>> GetIncomeVsExpenses(long userId)
+        {
+            var result = new List<IncomeVsExpensesDto>();
+            for (int i = 5; i >= 0; i--)
+            {
+                decimal totalIncome = 0;
+                decimal totalExpenses = 0;
+                var transactionsInMonth = _transactionRepository.GetAllIncluding(x => x.User)
+                    .Where(x => x.TransactionDate.Month == DateTime.Now.AddMonths(-i).Month && x.TransactionDate.Year == DateTime.Now.AddMonths(-i).Year && x.User.Id == userId)
+                    .ToList();
+                foreach (var transaction in transactionsInMonth)
+                {
+                    if (transaction.IsExpense == true)
+                    {
+                        totalExpenses += transaction.Amount;
+                    }
+                    else
+                    {
+                        totalIncome += transaction.Amount;
+                    }
+                }
+                var monthResults = new IncomeVsExpensesDto();
+                monthResults.Income = totalIncome;
+                monthResults.Expenses = totalExpenses;
+                monthResults.Year = DateTime.Now.AddMonths(-i).Year.ToString();
+                monthResults.Month = DateTime.Now.AddMonths(-i).Month.ToString();
+                result.Add(monthResults);
+            }
+            return result;
+        } 
+
         public async Task DeleteTransaction(Guid id)
         {
             var transaction = _transactionRepository.GetAllIncluding(x => x.BankAccount).Where(x => x.Id == id).FirstOrDefault();
+            var statement = _statementRepository.GetAll().Where(x => x.Id == transaction.StatementId).FirstOrDefault();
 
-            if (transaction.IsExpense ==  true)
+            if (transaction.TransactionDate.Year >= DateTime.Now.Year && transaction.TransactionDate.Month >= DateTime.Now.Month)
             {
-                transaction.BankAccount.Balance += transaction.Amount;
-                await _bankAccountRepository.UpdateAsync(transaction.BankAccount);
-            }
-            else
-            {
-                if (transaction.BankAccount.Balance < transaction.Amount)
+                if (transaction.IsExpense ==  true)
                 {
-                    transaction.BankAccount.Balance -= transaction.Amount;
+                    //statement adjustments
+                    statement.NetChange += transaction.Amount;
+                    statement.EndingBalance = statement.StartingBalance + statement.NetChange;
+                    await _statementRepository.UpdateAsync(statement);
+                
+                    //bank account adjustments
+                    transaction.BankAccount.Balance += transaction.Amount;
                     await _bankAccountRepository.UpdateAsync(transaction.BankAccount);
                 }
                 else
                 {
-                    throw new UserFriendlyException("Bank Account cannot have a negative balance");
+                    if (transaction.BankAccount.Balance > transaction.Amount)
+                    {
+                        //statement adjustments
+                        statement.NetChange += transaction.Amount;
+                        statement.EndingBalance = statement.StartingBalance + statement.NetChange;
+                        await _statementRepository.UpdateAsync(statement);
+
+                        //bank account adjustment
+                        transaction.BankAccount.Balance -= transaction.Amount;
+                        await _bankAccountRepository.UpdateAsync(transaction.BankAccount);
+                    }
+                    else
+                    {
+                        throw new UserFriendlyException("Bank Account cannot have a negative balance");
+                    }
                 }
+                _transactionRepository.Delete(transaction);
             }
-            _transactionRepository.Delete(transaction);
+            else
+            {
+                throw new UserFriendlyException("Can not delete a transaction older than 1 month");
+            }
         }
     }
 }

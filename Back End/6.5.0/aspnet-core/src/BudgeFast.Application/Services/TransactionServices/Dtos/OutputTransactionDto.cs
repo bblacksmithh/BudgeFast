@@ -9,7 +9,7 @@ namespace BudgeFast.Services.TransactionServices.Dtos
 {
     public class OutputTransactionDto: EntityDto<Guid>
     {
-        public Guid BankAccountId { get; set; }
+        public string AccountName { get; set; }
         public string TransactionCategory { get; set; }
         public decimal Amount { get; set; }
         public string Description { get; set; }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,7 +9,6 @@ using Castle.Facilities.Logging;
 using Abp.AspNetCore;
 using Abp.AspNetCore.Mvc.Antiforgery;
 using Abp.Castle.Logging.Log4Net;
-using Abp.Extensions;
 using BudgeFast.Configuration;
 using BudgeFast.Identity;
 using Abp.AspNetCore.SignalR.Hubs;
@@ -20,6 +18,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using System.IO;
+using System.Linq;
+using Abp.Extensions;
 
 namespace BudgeFast.Web.Host.Startup
 {

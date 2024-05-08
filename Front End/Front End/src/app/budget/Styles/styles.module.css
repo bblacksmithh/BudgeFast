@@ -1,0 +1,39 @@
+.navbarContainer {
+    width: 100%;
+}
+
+.header {
+    width: 100%;
+}
+
+.header p {
+    width: 100%;
+    text-align: center;
+    background-color: rgba(201, 201, 201, 0.356);
+    font-size: 25px;
+    font-weight: 100;
+    font-family:'Times New Roman', Times, serif;
+    color: #343434;
+}
+
+.budgetContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: auto;
+    width: 1000px;
+    min-height: fit-content;
+    margin-top: 20px;
+}
+
+.budgetList {
+    min-width: fit-content;
+}
+
+.budgetCard {
+    width: fit-content;
+    justify-content: space-evenly;
+    gap: 10px;
+    display: flex;
+    border-radius: 20px;
+}

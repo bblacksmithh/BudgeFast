@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Abp.Application.Services.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace BudgeFast.Services.BudgetServices.Dtos
 {
-    public class DisplayBudgetDto
+    public class DisplayBudgetDto: EntityDto<Guid>
     {
-        public string BudgetName { get; set; }
-        public List<BudgetCategoryOutputDto> Categories {  get; set; } 
+        public string Category { get; set; }
+        public decimal Amount { get; set; }
     }
 }

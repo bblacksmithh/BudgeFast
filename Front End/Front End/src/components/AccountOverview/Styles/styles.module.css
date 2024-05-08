@@ -1,0 +1,74 @@
+.main {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: fit-content;
+    padding: 0 100px 0 100px;
+    margin: auto;
+    align-items:start;
+    text-align: center;
+    gap: 100px;
+}
+@media screen and (max-width: 1332px) {
+    .main {
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 50px; /* Adjust padding as needed */
+        gap: 50px; /* Adjust gap as needed */
+    }
+}
+
+.netWorth {
+    width: 300px;
+    height: fit-content;
+    align-items: center;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.overall {
+    background: rgba(22, 152, 72, 0.397);
+    border-radius: 50%;
+    width: 280px;
+    height: 280px;
+    align-items: center;
+    text-align: center;
+    align-content: center;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+}
+
+.bankAccounts {
+    width: fit-content;
+    text-align: center;
+    padding: 10px;
+    border-radius: 15px;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+}
+
+.accountList {
+    min-width: fit-content;
+    overflow-y: scroll;
+    max-height: calc(82px*3);
+}
+
+.accountCard {
+    width: 250px !important;
+    text-align: center;
+    align-items: center;
+    display: flex;
+    border-radius: 20px;
+}
+
+.accountCard div {
+    width: 100%;
+}
+
+.accountCard p {
+    width: 100%;
+}
+
+.budgetOverview {
+    width: 300px;
+    height: fit-content;
+}

@@ -1,3 +1,45 @@
-.main {
-    
+.navbarContainer {
+    width: 100%;
+}
+
+.budgetContainer {
+    width: calc(100% - 100px);
+    height: 500px;
+    border-radius: 25px;
+    margin: 20px auto;
+    padding: 10px 0 150px 0;
+    background: rgba(101, 101, 101, 0.041);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.accountOverview {
+    width: fit-content;
+    height: auto;
+    border-radius: 25px;
+    margin: 20px auto;
+    padding: 10px 0 30px 0;
+    background: rgba(101, 101, 101, 0.041);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.incomeVsExpense {
+    width: calc(100% - 100px);
+    height: 500px;
+    border-radius: 25px;
+    margin: 20px auto;
+    padding: 10px 0 100px 0;
+    background: rgba(101, 101, 101, 0.041);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.forecast {
+    width: calc(100% - 100px);
+    align-content: center;
+    text-align: center;
+    height: 500px;
+    border-radius: 25px;
+    margin: 20px auto;
+    padding: 10px 0 100px 0;
+    background: rgba(101, 101, 101, 0.041);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
